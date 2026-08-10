@@ -8,6 +8,7 @@ and reference it locally so the site keeps working if the source disappears.
 |------|--------|-------|
 | `logo.svg` | 🔶 PLACEHOLDER | Replace with Pamela's real logo (transparent PNG or SVG). |
 | `favicon.svg` | 🔶 PLACEHOLDER | Derived from the placeholder logo. Replace to match final brand. |
+| `aor-badge.svg` | 🔶 PLACEHOLDER | Replace with the official AoR "Registered Member" logo from your member area. |
 
 ## Recommended real photos to add (currently rendered as soft colour panels)
 - `hero.jpg` — calm treatment room / feet + hands (approx 1600×1000).

@@ -39,7 +39,7 @@ comment like `<!-- EDIT: ... -->`.
 - Email and phone appear in the footer of every page and on `contact.html`. Update
   them in each place (a find-and-replace for the email/phone is quickest).
 
-**Swap the logo / add photos**
+**Swap the logo, AoR badge or add photos**
 - Put files in the `Images/` folder and update the matching `src="…"`. See
   `Images/README-images.md`. Always keep images local — don't link to another website.
 
@@ -48,9 +48,11 @@ comment like `<!-- EDIT: ... -->`.
 ## 🔶 Placeholder / invented content to replace
 Everything below is **not** from your live site — please supply the real version:
 
-- **Logo & favicon** (`Images/logo.svg`, `Images/favicon.svg`) — placeholders.
+- **Logo, favicon & AoR badge** (`Images/`) — placeholders. The AoR badge should be
+  swapped for the official "Registered Member" logo from your AoR member area.
 - **Photography** — the site currently uses soft colour panels; real photos recommended.
 - **Testimonials** (homepage) — sample quotes; send real client words + permission.
+- **"What is reflexology?" step wording** (homepage) — confirm it matches your session.
 - **Some FAQ answers** (`treatments.html`) — marked 🔶; confirm or reword.
 - **Two sample news posts** (`js/news.js`) — the "tip" post wording is a placeholder.
 - **Contact form** — shows a success message but is **not connected** yet (see below).
@@ -75,7 +77,18 @@ connect it to **Formspree** or a **Cloudflare Worker** — full steps in
 
 ---
 
-## Changelog — vs the original (Wix) site
+## Changelog
+
+### Update — trust & credibility (inspired by the AoR site)
+- Added a **"What is reflexology?"** explainer with a simple 3-step "what to expect"
+  section on the homepage, for first-time visitors.
+- Added a **"Why choose Heel Head Harmony"** trust strip (Level 5, AoR registered,
+  fully insured, calm private setting).
+- Added an **AoR "Registered Member" badge** in the footer of every page, linking to
+  aor.org.uk (placeholder — swap for the official badge).
+- Added a **medical disclaimer** in the footer of every page.
+
+### Initial rebuild — vs the original (Wix) site
 - Rebuilt as a standalone static site (no Wix, no platform lock-in, faster to load).
 - Introduced a single CSS-variable design system for five-minute re-theming.
 - Added shared, accessible header/footer with an active-page state on every page.
@@ -92,9 +105,9 @@ connect it to **Formspree** or a **Cloudflare Worker** — full steps in
 ---
 
 ## Pre-launch checklist
-- [ ] Replace logo + favicon with real brand assets.
+- [ ] Replace logo, favicon and AoR badge with real brand assets.
 - [ ] Add real photography; compress images; keep intrinsic width/height.
-- [ ] Replace all 🔶 placeholder text (testimonials, FAQ answers, sample post).
+- [ ] Replace all 🔶 placeholder text (testimonials, FAQ answers, "what to expect" steps, sample post).
 - [ ] Wire the contact form to a live endpoint and test a real submission.
 - [ ] Confirm email/phone/locations are correct on every page.
 - [ ] Point `heelheadharmony.co.uk` at the host; check `_redirects` for old URLs.

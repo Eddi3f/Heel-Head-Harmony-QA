@@ -37,6 +37,27 @@ page-specific one-offs. Copy a block, change the text.
 <div class="grid grid--3">…</div>     <!-- --2, --3, or --auto (auto-fit) -->
 ```
 
+## Trust strip (Why choose)
+```html
+<div class="trust">
+  <div class="trust-item">
+    <div class="icon" aria-hidden="true">🎓</div>
+    <h3>Level 5 qualified</h3>
+    <p>Short reassurance line.</p>
+  </div>
+</div>
+```
+
+## Steps (What is reflexology)
+```html
+<div class="steps">
+  <div class="step">
+    <span class="num" aria-hidden="true">1</span>
+    <div><h3>Step title</h3><p>Explanation.</p></div>
+  </div>
+</div>
+```
+
 ## Price block
 ```html
 <div class="price-block">
@@ -69,6 +90,15 @@ page-specific one-offs. Copy a block, change the text.
   <button class="btn btn--primary" type="submit">Send</button>
   <p class="form-status" tabindex="-1"></p>
 </form>
+```
+
+## AoR badge (footer)
+```html
+<a class="aor-badge" href="https://www.aor.org.uk/" target="_blank" rel="noopener"
+   aria-label="Registered member of the Association of Reflexologists">
+  <img src="Images/aor-badge.svg" width="150" height="60"
+       alt="Association of Reflexologists — registered member">
+</a>
 ```
 
 ## Scroll-reveal

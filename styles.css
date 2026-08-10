@@ -358,15 +358,59 @@ body.menu-open .nav-toggle span::after  { transform: translateY(-6px) rotate(-45
 .footer-brand { display: inline-flex; align-items: center; gap: .6rem; color: #fff; font-family: var(--font-heading); font-size: 1.3rem; text-decoration: none; }
 .footer-brand img { width: 42px; height: 42px; }
 .footer-bottom {
-  margin-top: var(--space-4); padding-top: var(--space-2);
+  margin-top: var(--space-3); padding-top: var(--space-2);
   border-top: 1px solid rgba(255,255,255,.12);
   display: flex; flex-wrap: wrap; gap: .6rem; justify-content: space-between;
   font-size: .85rem; color: #a9c1ba;
 }
 
+/* AoR badge + medical disclaimer */
+.aor-badge { display: inline-block; margin-top: 1rem; background: #fff; border-radius: 12px; padding: 5px 8px; }
+.aor-badge img { width: 150px; height: auto; }
+.footer-disclaimer {
+  margin-top: var(--space-4); padding-top: var(--space-2);
+  border-top: 1px solid rgba(255,255,255,.12);
+  font-size: .82rem; color: #a9c1ba; max-width: 92ch;
+}
+
 /* ----- 18. Scroll-reveal ------------------------------------------------ */
 .reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
 .reveal.is-in { opacity: 1; transform: none; }
+
+/* ----- 18b. Trust strip (Why choose) ------------------------------------ */
+.trust {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: clamp(1rem, 3vw, 1.6rem);
+  margin-top: 1.6rem;
+}
+.trust-item {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.5rem 1.4rem;
+  box-shadow: var(--shadow-soft); text-align: center;
+}
+.trust-item .icon {
+  width: 54px; height: 54px; margin: 0 auto var(--space-1);
+  border-radius: 50%; display: grid; place-items: center;
+  background: var(--mist); font-size: 1.4rem;
+}
+.trust-item h3 { font-size: 1.1rem; margin-bottom: .3rem; }
+.trust-item p { margin: 0; font-size: .95rem; color: var(--text-muted); }
+
+/* ----- 18c. Steps (What is reflexology) --------------------------------- */
+.steps { display: grid; gap: 1rem; margin-top: 1.2rem; }
+.step {
+  display: grid; grid-template-columns: auto 1fr; gap: 1.1rem; align-items: start;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.2rem 1.4rem; box-shadow: var(--shadow-soft);
+}
+.step .num {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--primary); color: #fff;
+  display: grid; place-items: center; font-family: var(--font-heading); font-weight: 600; font-size: 1.15rem;
+}
+.step h3 { font-size: 1.1rem; margin: 0 0 .2rem; }
+.step p { margin: 0; color: var(--text-muted); }
 
 /* ----- 19. Utilities ---------------------------------------------------- */
 .mt-0 { margin-top: 0; }

@@ -7,7 +7,7 @@ this repo to Cloudflare Pages / Netlify / GitHub Pages.
 ## File map
 ```
 /
-├── index.html            Home
+├── index.html            Home (incl. "What is reflexology?" + "Why choose" strip)
 ├── about.html            About Pamela (real bio from live site)
 ├── treatments.html       Treatments, prices, FAQ
 ├── research.html         Research links by condition
@@ -20,7 +20,8 @@ this repo to Cloudflare Pages / Netlify / GitHub Pages.
 │   └── news.js           Owner-editable news data + renderer (+ Google Sheet option)
 ├── Images/               Local assets only — never hot-link a CDN
 │   ├── logo.svg          🔶 placeholder logo
-│   └── favicon.svg       🔶 placeholder favicon
+│   ├── favicon.svg       🔶 placeholder favicon
+│   └── aor-badge.svg     🔶 placeholder AoR "Registered Member" badge
 ├── docs/
 │   ├── ARCHITECTURE.md   This file
 │   └── COMPONENTS.md     Reusable UI patterns
@@ -42,6 +43,13 @@ this repo to Cloudflare Pages / Netlify / GitHub Pages.
   and the concept-form success state. All motion respects `prefers-reduced-motion`.
 - `js/news.js` runs only on `news.html`. It renders cards from a plain data array so
   the owner can add posts without touching HTML.
+
+## Trust & credibility (inspired by the AoR site)
+- Homepage carries a **"What is reflexology?"** explainer and a **"Why choose Heel
+  Head Harmony"** trust strip (Level 5, AoR registered, insured, calm setting).
+- The footer shows an **AoR member badge** (placeholder — swap for the official one)
+  linking to aor.org.uk, plus a **medical disclaimer** that reflexology is a
+  complementary therapy and not a substitute for medical advice.
 
 ## Owner-editable content (what changes often)
 | Content | Where | How |
@@ -70,8 +78,9 @@ message, but does not send anywhere. To make it send for real, pick one:
 to CSV, paste the URL, and the news page reads it at runtime. See that file.
 
 ## Launch plan
-1. Replace placeholder assets (logo, favicon) and add real photos.
-2. Confirm/replace all 🔶 placeholder text (testimonials, some FAQ answers).
+1. Replace placeholder assets (logo, favicon, AoR badge) and add real photos.
+2. Confirm/replace all 🔶 placeholder text (testimonials, some FAQ answers, the
+   "What is reflexology?" step wording).
 3. Wire the contact form to a real endpoint.
 4. Point the `heelheadharmony.co.uk` domain at the host; verify `_redirects`.
 5. Submit `sitemap.xml` in Google Search Console.

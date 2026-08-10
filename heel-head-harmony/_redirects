@@ -1,9 +1,0 @@
-# Redirects for Cloudflare Pages / Netlify.
-# Maps the old (Wix) URLs to the new pages so existing links & search rankings keep working.
-# Format: /old-path   /new-path   301
-
-/treatments-and-prices   /treatments.html   301
-/about-me                /about.html        301
-/home                    /                  301
-
-# EDIT: add any other old URLs you find in Google Search Console here.

@@ -12,9 +12,7 @@
   /* ---- 1. Sticky header gains a shadow once you scroll ------------------ */
   var header = document.querySelector('.site-header');
   if (header) {
-    var onScroll = function () {
-      header.classList.toggle('is-stuck', window.scrollY > 8);
-    };
+    var onScroll = function () { header.classList.toggle('is-stuck', window.scrollY > 8); };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
   }
@@ -24,36 +22,18 @@
   var links  = document.querySelector('.nav-links');
   var body   = document.body;
 
-  function openMenu() {
-    body.classList.add('menu-open');
-    toggle.setAttribute('aria-expanded', 'true');
-    body.style.overflow = 'hidden';            // trap scroll
-  }
-  function closeMenu() {
-    body.classList.remove('menu-open');
-    if (toggle) toggle.setAttribute('aria-expanded', 'false');
-    body.style.overflow = '';
-  }
+  function openMenu() { body.classList.add('menu-open'); toggle.setAttribute('aria-expanded', 'true'); body.style.overflow = 'hidden'; }
+  function closeMenu() { body.classList.remove('menu-open'); if (toggle) toggle.setAttribute('aria-expanded', 'false'); body.style.overflow = ''; }
 
   if (toggle && links) {
     toggle.addEventListener('click', function () {
       body.classList.contains('menu-open') ? closeMenu() : openMenu();
     });
-    // Close on link click
-    links.addEventListener('click', function (e) {
-      if (e.target.closest('a')) closeMenu();
-    });
-    // Close on Escape
+    links.addEventListener('click', function (e) { if (e.target.closest('a')) closeMenu(); });
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && body.classList.contains('menu-open')) {
-        closeMenu();
-        toggle.focus();
-      }
+      if (e.key === 'Escape' && body.classList.contains('menu-open')) { closeMenu(); toggle.focus(); }
     });
-    // Reset when resizing back to desktop
-    window.addEventListener('resize', function () {
-      if (window.innerWidth > 860) closeMenu();
-    });
+    window.addEventListener('resize', function () { if (window.innerWidth > 860) closeMenu(); });
   }
 
   /* ---- 3. Scroll-reveal ------------------------------------------------ */
@@ -61,10 +41,7 @@
   if (reveals.length && !reduceMotion && 'IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-in');
-          io.unobserve(entry.target);
-        }
+        if (entry.isIntersecting) { entry.target.classList.add('is-in'); io.unobserve(entry.target); }
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
     reveals.forEach(function (el) { io.observe(el); });
@@ -73,9 +50,6 @@
   }
 
   /* ---- 4. Concept forms: honest success state -------------------------- */
-  /* NOTE: forms are NOT wired to a backend yet. See docs/ARCHITECTURE.md for
-     the server-side seam (Cloudflare Worker / Formspree). This only shows a
-     friendly confirmation so the UI is complete, not silently broken.       */
   var forms = document.querySelectorAll('form[data-concept]');
   forms.forEach(function (form) {
     form.addEventListener('submit', function (e) {

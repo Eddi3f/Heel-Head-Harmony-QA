@@ -8,6 +8,7 @@ build step. Open the files locally, or drag the folder into Cloudflare Pages / N
 - **Tagline:** Rebalance yourself
 - **Fonts:** Playfair Display (headings) + Libre Baskerville (body)
 - **Colours:** `#ffffff` · `#e2f0e7` · `#12201e` · `#b5d6d1`
+- **Socials:** Instagram `@heel_head_harmony` · Facebook `HeelHeadHarmony`
 
 ## Pages
 Home · About Pamela · Treatments & Prices · Research · News · Contact (+ a friendly 404).
@@ -16,103 +17,88 @@ Home · About Pamela · Treatments & Prices · Research · News · Contact (+ a 
 
 ## How to update your site (plain English)
 
-You don't need to be technical. Each editable spot is marked in the code with a
-comment like `<!-- EDIT: ... -->`.
+Each editable spot is marked in the code with a comment like `<!-- EDIT: ... -->`.
 
-**Change a price**
-1. Open `treatments.html`.
-2. Find the price you want (e.g. `<span class="amt">&pound;40</span>`).
-3. Change the number, save, and re-upload the file (or commit it).
+**Change a photo** — drop a new file into `Images/` using the **same filename**
+(e.g. replace `Images/hero.jpg`). The site updates automatically, no code change.
 
-**Add or change a news post / offer**
-1. Open `js/news.js`.
-2. Copy the top `{ … }` block, paste it above the others, and edit the date, tag,
-   title and body text.
-3. Save. Newest posts show first automatically.
-   *(Prefer a spreadsheet? See the Google Sheet option at the bottom of that file.)*
+**Change a price** — open `treatments.html`, find the price (e.g.
+`<span class="amt">&pound;40</span>`), change the number, save, re-upload.
 
-**Add an FAQ**
-- In `treatments.html`, copy one `<details>…</details>` block and edit the question
-  and answer.
+**Add a news post / offer** — open `js/news.js`, copy the top `{ … }` block, edit the
+date, tag, title and body. Newest shows first. (Or switch to a Google Sheet — see the
+bottom of that file.)
 
-**Update contact details**
-- Email and phone appear in the footer of every page and on `contact.html`. Update
-  them in each place (a find-and-replace for the email/phone is quickest).
+**Add an FAQ** — in `treatments.html`, copy a `<details>…</details>` block.
 
-**Swap the logo, AoR badge or add photos**
-- Put files in the `Images/` folder and update the matching `src="…"`. See
-  `Images/README-images.md`. Always keep images local — don't link to another website.
+**Update contact details / socials** — they appear in the footer of every page and on
+`contact.html`. A find-and-replace is quickest.
 
 ---
 
-## 🔶 Placeholder / invented content to replace
-Everything below is **not** from your live site — please supply the real version:
-
-- **Logo, favicon & AoR badge** (`Images/`) — placeholders. The AoR badge should be
-  swapped for the official "Registered Member" logo from your AoR member area.
-- **Photography** — the site currently uses soft colour panels; real photos recommended.
-- **Testimonials** (homepage) — sample quotes; send real client words + permission.
-- **"What is reflexology?" step wording** (homepage) — confirm it matches your session.
-- **Some FAQ answers** (`treatments.html`) — marked 🔶; confirm or reword.
-- **Two sample news posts** (`js/news.js`) — the "tip" post wording is a placeholder.
+## 🔶 Placeholder / to-supply
+- **Logo & favicon** (`Images/logo.svg`, `favicon.svg`) — still placeholders.
+- **Hand photo** — `Images/treatment-hand.jpg` not supplied; the Hand card shows a
+  green panel for now. Drop the file in and swap the panel for an `<img>` (marked in `index.html`).
+- **Higher-res portrait / foot photo** — current `pamela.jpg` and `treatment-foot.jpg`
+  are small (200×200) so look best at modest sizes; larger versions would be sharper.
+- **Testimonials** (homepage) — sample quotes; send real ones with permission.
+- **"What to expect" steps & some FAQ answers** — marked 🔶; confirm wording.
 - **Contact form** — shows a success message but is **not connected** yet (see below).
 
-Everything else (bio, mission, treatment descriptions, all prices, booking/cancellation
-policy, research links, email, phone, locations) is pulled from your current live site.
+Everything else (bio, treatments, all prices, policies, research links, email, phone,
+locations, socials) is real.
 
 ---
 
 ## Make the contact form actually send
-The form is intentionally "not wired up yet" rather than silently broken. To go live,
-connect it to **Formspree** or a **Cloudflare Worker** — full steps in
-`docs/ARCHITECTURE.md` ("Form seam"). Keep any keys/secrets server-side, never in the page.
+Connect it to **Formspree** or a **Cloudflare Worker** — steps in
+`docs/ARCHITECTURE.md` ("Form seam"). Keep any keys/secrets server-side.
 
 ---
 
 ## Deploy
-- **Cloudflare Pages / Netlify:** connect the repo (or drag the folder). No build
-  command; output directory is the root. `_redirects` maps old Wix URLs to new pages.
-- **GitHub Pages:** enable Pages on the repo root/branch.
-- **Local preview:** just open `index.html`, or run `python -m http.server` in the folder.
+- **GitHub Pages:** Settings → Pages → Deploy from branch → `main` / root.
+- **Cloudflare Pages / Netlify:** connect the repo; no build command; output = root.
+  `_redirects` maps old Wix URLs to the new pages.
+- **Local preview:** open `index.html`, or run `python -m http.server`.
 
 ---
 
 ## Changelog
 
+### Update — real images & social links
+- Added Pamela's photos throughout: **split hero** image (jade roller on a reflexology
+  chart), **photo treatment cards** (foot + ear), and a **portrait** on the About page.
+- Added the **official AoR badge** in the footer (replacing the placeholder).
+- Added **Instagram + Facebook** icon links to every footer, and text links on Contact.
+- Added a reflexology-chart **feature image** to the Research page.
+- All images optimised to < 250 KB, with lazy-loading and fixed dimensions.
+
 ### Update — trust & credibility (inspired by the AoR site)
-- Added a **"What is reflexology?"** explainer with a simple 3-step "what to expect"
-  section on the homepage, for first-time visitors.
-- Added a **"Why choose Heel Head Harmony"** trust strip (Level 5, AoR registered,
-  fully insured, calm private setting).
-- Added an **AoR "Registered Member" badge** in the footer of every page, linking to
-  aor.org.uk (placeholder — swap for the official badge).
-- Added a **medical disclaimer** in the footer of every page.
+- Added a **"What is reflexology?"** explainer with a 3-step "what to expect" section.
+- Added a **"Why choose Heel Head Harmony"** trust strip.
+- Added a **medical disclaimer** to the footer of every page.
 
 ### Initial rebuild — vs the original (Wix) site
-- Rebuilt as a standalone static site (no Wix, no platform lock-in, faster to load).
-- Introduced a single CSS-variable design system for five-minute re-theming.
-- Added shared, accessible header/footer with an active-page state on every page.
-- Added a **skip link**, visible focus states, semantic landmarks and reduced-motion support.
-- New **About** page carrying Pamela's full bio (was a section on the old home page).
-- Treatments page restructured into clear price cards + booking/cancellation notes.
-- Added an **FAQ** section (answers to confirm).
-- **News** page is now data-driven and owner-editable (array or Google Sheet).
-- Research links regrouped into a tidy, scannable card grid with a safety disclaimer.
-- Added SEO basics per page (unique title/description, theme-color, favicon),
-  `sitemap.xml`, `robots.txt`, a 404 page and `_redirects`.
-- Contact form upgraded to an accessible concept form with a documented backend seam.
+- Rebuilt as a standalone static site (faster, no platform lock-in).
+- Single CSS-variable design system; shared accessible header/footer with active state.
+- Skip link, visible focus, semantic landmarks, reduced-motion support.
+- New About page; restructured Treatments with price cards + FAQ.
+- Data-driven, owner-editable News; tidy Research grid with disclaimer.
+- SEO basics per page, `sitemap.xml`, `robots.txt`, 404 page, `_redirects`.
+- Accessible concept contact form with a documented backend seam.
 
 ---
 
 ## Pre-launch checklist
-- [ ] Replace logo, favicon and AoR badge with real brand assets.
-- [ ] Add real photography; compress images; keep intrinsic width/height.
-- [ ] Replace all 🔶 placeholder text (testimonials, FAQ answers, "what to expect" steps, sample post).
+- [ ] Replace logo + favicon with real brand assets.
+- [ ] Add `treatment-hand.jpg`; consider higher-res portrait/foot photos.
+- [ ] Replace 🔶 placeholder text (testimonials, FAQ answers, "what to expect" steps).
 - [ ] Wire the contact form to a live endpoint and test a real submission.
-- [ ] Confirm email/phone/locations are correct on every page.
-- [ ] Point `heelheadharmony.co.uk` at the host; check `_redirects` for old URLs.
+- [ ] Confirm email/phone/socials/locations on every page.
+- [ ] Point `heelheadharmony.co.uk` at the host; check `_redirects`.
 - [ ] Verify canonical URLs match the final live paths.
 - [ ] Submit `sitemap.xml` in Google Search Console.
-- [ ] Test on real iOS + Android, with keyboard only, and a screen reader.
+- [ ] Test on real iOS + Android, keyboard only, and a screen reader.
 - [ ] Check no horizontal scroll from 320px up; run Lighthouse.
-- [ ] (Optional) Add a privacy/cookie note if you enable analytics or a form backend.

@@ -1,113 +1,73 @@
 # Components — reusable UI patterns
 
-Everything is built from these repeatable pieces. Reuse them rather than creating
-page-specific one-offs. Copy a block, change the text.
+Reuse these repeatable pieces rather than creating page-specific one-offs.
 
 ## Section
 ```html
-<section class="section">            <!-- add --soft for tinted bg, --ink for dark -->
+<section class="section">            <!-- --soft = tinted bg, --ink = dark -->
   <div class="container"> … </div>
 </section>
 ```
 
-## Eyebrow + heading
+## Split hero (image + text)
 ```html
-<span class="eyebrow">Small label</span>
-<h2>Section heading</h2>
+<section class="hero hero--split">
+  <div class="container">
+    <div> …eyebrow, h1, lede, .hero-actions… </div>
+    <div class="hero-media"><img src="Images/hero.jpg" width="940" height="525" alt="…"></div>
+  </div>
+</section>
+```
+
+## Feature (image beside text)
+```html
+<div class="feature">           <!-- add feature--flip to put image on the right -->
+  <div class="feature-media"><img src="Images/…" width="" height="" alt="…"></div>
+  <div> …text… </div>
+</div>
+```
+
+## Photo card (treatment)
+```html
+<article class="card card--media">
+  <div class="card-media"><img src="Images/…" width="400" height="250" alt="…" loading="lazy"></div>
+  <div class="card-body"><h3>Title</h3><p class="lede">Copy…</p><a href="…">Link →</a></div>
+</article>
+```
+No photo yet? Use a panel: `<div class="card-media card-media--panel">✋</div>`.
+
+## Portrait
+```html
+<div class="portrait"><img src="Images/pamela.jpg" width="400" height="400" alt="…"></div>
 ```
 
 ## Button
 ```html
-<a class="btn btn--primary" href="…">Primary</a>
-<a class="btn btn--ghost"   href="…">Outline</a>
-<a class="btn btn--light"   href="…">On dark backgrounds</a>
+<a class="btn btn--primary">Primary</a>  <a class="btn btn--ghost">Outline</a>  <a class="btn btn--light">On dark</a>
 ```
 
-## Card
-```html
-<article class="card">
-  <div class="icon" aria-hidden="true">🦶</div>
-  <h3>Title</h3>
-  <p class="lede">Copy…</p>
-</article>
-```
+## Trust strip / Steps / Price block / FAQ / Note
+See `styles.css` sections 18b–18c, 10, 15, 19 and existing pages for markup.
 
-## Grid
+## Social icons (footer)
 ```html
-<div class="grid grid--3">…</div>     <!-- --2, --3, or --auto (auto-fit) -->
-```
-
-## Trust strip (Why choose)
-```html
-<div class="trust">
-  <div class="trust-item">
-    <div class="icon" aria-hidden="true">🎓</div>
-    <h3>Level 5 qualified</h3>
-    <p>Short reassurance line.</p>
-  </div>
+<div class="social">
+  <a href="…instagram…" aria-label="Instagram"><svg viewBox="0 0 24 24">…</svg></a>
+  <a href="…facebook…"  aria-label="Facebook"><svg viewBox="0 0 24 24">…</svg></a>
 </div>
-```
-
-## Steps (What is reflexology)
-```html
-<div class="steps">
-  <div class="step">
-    <span class="num" aria-hidden="true">1</span>
-    <div><h3>Step title</h3><p>Explanation.</p></div>
-  </div>
-</div>
-```
-
-## Price block
-```html
-<div class="price-block">
-  <h3>Service name</h3>
-  <div class="price-row"><span>At my home</span><span class="amt">&pound;40</span></div>
-</div>
-```
-
-## FAQ item
-```html
-<div class="faq">
-  <details><summary>Question?</summary><p>Answer.</p></details>
-</div>
-```
-
-## Ticked list
-```html
-<ul class="tick"><li>Point one</li></ul>
-```
-
-## Note / callout
-```html
-<div class="note">Important info…</div>
-```
-
-## Concept form
-```html
-<form class="form" data-concept novalidate>
-  <div class="field"><label for="name">Name</label><input id="name" required></div>
-  <button class="btn btn--primary" type="submit">Send</button>
-  <p class="form-status" tabindex="-1"></p>
-</form>
 ```
 
 ## AoR badge (footer)
 ```html
-<a class="aor-badge" href="https://www.aor.org.uk/" target="_blank" rel="noopener"
-   aria-label="Registered member of the Association of Reflexologists">
-  <img src="Images/aor-badge.svg" width="150" height="60"
-       alt="Association of Reflexologists — registered member">
+<a class="aor-badge" href="https://www.aor.org.uk/" target="_blank" rel="noopener">
+  <img src="Images/aor-badge.png" width="130" height="72" alt="Association of Reflexologists — registered member">
 </a>
 ```
 
 ## Scroll-reveal
-Add `class="reveal"` to any element to have it fade/slide in on scroll. Automatically
-disabled for visitors who prefer reduced motion.
+Add `class="reveal"` to fade/slide an element in on scroll (disabled for reduced motion).
 
 ## Accessibility notes
-- Every page starts with a `.skip-link`.
-- Active nav link uses `aria-current="page"`.
-- Decorative images use empty `alt=""`; meaningful images need descriptive alt text.
-- Focus is always visible (`:focus-visible` outline). Keep it.
-- Live regions: news list uses `aria-live="polite"`; form status is announced.
+- Every page starts with a `.skip-link`; active nav link uses `aria-current="page"`.
+- Decorative images use `alt=""`; meaningful images need descriptive alt text.
+- Keep the visible `:focus-visible` outline. News list is `aria-live="polite"`.

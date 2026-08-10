@@ -11,10 +11,8 @@
 
   /* ======================================================================
      EDIT HERE ↓  — one block per post. Newest at the top.
-     date  : "YYYY-MM-DD"  (used for sorting + display)
-     tag   : short label, e.g. "Offer", "Update", "Tip"
-     title : the headline
-     body  : one or two short sentences
+     date  : "YYYY-MM-DD"      tag : short label (Offer / Update / Tip)
+     title : the headline      body: one or two short sentences
      ====================================================================== */
   var POSTS = [
     {
@@ -65,9 +63,7 @@
       );
     }).join('');
 
-    // Re-trigger reveal for freshly-inserted cards
-    if ('IntersectionObserver' in window &&
-        !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); } });
       }, { threshold: 0.12 });
@@ -81,11 +77,9 @@
 
   /* ======================================================================
      GOOGLE SHEET OPTION (optional upgrade — no code edits to add posts)
-     ----------------------------------------------------------------------
      1. Create a Google Sheet with columns: date | tag | title | body
      2. File → Share → Publish to web → CSV.
-     3. Paste the CSV URL below and uncomment this block; delete render(POSTS)
-        above so the sheet becomes the single source of truth.
+     3. Paste the CSV URL below, uncomment, and delete render(POSTS) above.
 
      var SHEET_CSV = "PASTE_PUBLISHED_CSV_URL_HERE";
      fetch(SHEET_CSV).then(function (r) { return r.text(); }).then(function (csv) {

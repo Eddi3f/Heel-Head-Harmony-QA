@@ -3,21 +3,22 @@
    -------------------------------------------------------------------------
    Reads the tabs named in js/config.js and fills in:
      • Testimonials  (homepage)   → #testimonials  (auto-scrolling carousel)
-     • Treatments    (prices page)→ #price-grid
+     • Treatments    (prices page)→ #price-grid  (+ "Book this treatment" buttons)
      • Research      (research)   → #research-grid
+   Also keeps the Contact page's subject dropdown (#subject-treatments) in
+   sync with the treatment names from the sheet.
 
-   Resilient by design: if the sheet isn't set up, is offline, or a tab is
-   empty, the page keeps whatever built-in content is already in the HTML.
-   No dependencies. Vanilla JS.
+   Resilient: if the sheet isn't set up, is offline, or a tab is empty, each
+   page keeps its built-in content. Vanilla JS, no dependencies.
    ========================================================================= */
 (function () {
   'use strict';
 
   var C = window.HHH_CONFIG || {};
   if (!C.enabled) return;
-  if (!C.sheetId || /PASTE/i.test(C.sheetId)) return;   // not configured yet → keep fallback
+  if (!C.sheetId || /PASTE/i.test(C.sheetId)) return;   // not configured → keep fallback
 
-  /* ---- Icon library (matches the site's line icons) -------------------- */
+  /* ---- Icon library ---------------------------------------------------- */
   var PATHS = {
     foot:    '<path d="M8.5 3.5c1.6 0 2.4 1.2 2.4 3 0 2.2-1.1 4-1.1 6.1 0 1.8 1.1 2.9 1.1 4.6 0 1.8-1.3 3-3.2 3-2 0-3.2-1.3-3.2-3.3 0-2.6.9-3.4.9-5.9C5.4 8.3 5 6.9 5 5.6 5 4.2 6.7 3.5 8.5 3.5Z"/><circle cx="14.5" cy="5" r="1.1"/><circle cx="17.4" cy="6.2" r="1"/><circle cx="19.3" cy="8.4" r=".9"/><circle cx="20.2" cy="11" r=".8"/>',
     hand:    '<path d="M7 11V6.2a1.3 1.3 0 0 1 2.6 0V10m0-.2V4.8a1.3 1.3 0 0 1 2.6 0V10m0-.4V5.4a1.3 1.3 0 0 1 2.6 0V11m0-.6V7a1.3 1.3 0 0 1 2.6 0v6.6c0 3.4-2.2 6.4-5.8 6.4-2.3 0-3.6-.9-4.9-2.6l-2.3-3.1a1.35 1.35 0 0 1 2-1.8L7 13.4Z"/>',
@@ -35,8 +36,7 @@
   /* ---- Helpers --------------------------------------------------------- */
   function esc(s) {
     return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
   function urlAttr(s) { return String(s == null ? '' : s).replace(/"/g, '%22').replace(/\s/g, ''); }
   function shown(v) { return !/^(no|false|0|hide|hidden)$/i.test(String(v || '').trim()); }
@@ -45,10 +45,8 @@
     var rows = [], row = [], field = '', i = 0, inQ = false, c;
     while (i < text.length) {
       c = text[i];
-      if (inQ) {
-        if (c === '"') { if (text[i + 1] === '"') { field += '"'; i++; } else inQ = false; }
-        else field += c;
-      } else {
+      if (inQ) { if (c === '"') { if (text[i + 1] === '"') { field += '"'; i++; } else inQ = false; } else field += c; }
+      else {
         if (c === '"') inQ = true;
         else if (c === ',') { row.push(field); field = ''; }
         else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
@@ -60,33 +58,37 @@
     row.push(field); rows.push(row);
     return rows;
   }
-
   function toObjects(rows) {
     if (!rows.length) return [];
     var head = rows[0].map(function (h) { return h.trim().toLowerCase(); });
-    return rows.slice(1).filter(function (r) {
-      return r.some(function (c) { return c && c.trim(); });
-    }).map(function (r) {
-      var o = {};
-      head.forEach(function (h, idx) { o[h] = (r[idx] || '').trim(); });
-      return o;
-    });
+    return rows.slice(1).filter(function (r) { return r.some(function (c) { return c && c.trim(); }); })
+      .map(function (r) { var o = {}; head.forEach(function (h, i) { o[h] = (r[i] || '').trim(); }); return o; });
   }
-
   function sheetUrl(tab) {
-    return 'https://docs.google.com/spreadsheets/d/' + C.sheetId +
-           '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent(tab);
+    return 'https://docs.google.com/spreadsheets/d/' + C.sheetId + '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent(tab);
   }
-
   function load(tab, done) {
     fetch(sheetUrl(tab), { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.text() : Promise.reject(); })
       .then(function (t) { done(toObjects(parseCSV(t))); })
-      .catch(function () { /* keep built-in fallback */ });
+      .catch(function () {});
+  }
+  function reveal(el) { el.querySelectorAll('.reveal').forEach(function (n) { n.classList.add('is-in'); }); }
+
+  // "Book this treatment" button → contact page with the subject prefilled
+  function bookBtn(name) {
+    return '<a class="btn btn--primary price-book" href="contact.html?subject=' +
+           encodeURIComponent(name) + '">Book this treatment</a>';
   }
 
-  function reveal(el) {
-    el.querySelectorAll('.reveal').forEach(function (n) { n.classList.add('is-in'); });
+  // Keep the contact page's subject dropdown in sync with sheet treatments
+  function syncSubjectOptions(names) {
+    var group = document.getElementById('subject-treatments');
+    if (!group || !names.length) return;
+    group.innerHTML = names.map(function (n) {
+      return '<option value="' + esc(n) + '">' + esc(n) + '</option>';
+    }).join('');
+    if (window.HHH_applySubjectFromURL) window.HHH_applySubjectFromURL();
   }
 
   /* ---- 1. Testimonials (homepage carousel) ----------------------------- */
@@ -98,19 +100,17 @@
       tEl.innerHTML = rows.map(function (r) {
         var who = esc(r.name || '');
         if (r.location) who += (who ? ', ' : '') + esc(r.location);
-        return '<figure class="quote">' +
-                 '<p>&ldquo;' + esc(r.quote) + '&rdquo;</p>' +
-                 (who ? '<figcaption class="who">&mdash; ' + who + '</figcaption>' : '') +
-               '</figure>';
+        return '<figure class="quote"><p>&ldquo;' + esc(r.quote) + '&rdquo;</p>' +
+               (who ? '<figcaption class="who">&mdash; ' + who + '</figcaption>' : '') + '</figure>';
       }).join('');
-      // Re-run the carousel now that the cards have changed
       if (window.HHH_initTestimonialCarousel) window.HHH_initTestimonialCarousel();
     });
   }
 
-  /* ---- 2. Treatments & prices ------------------------------------------ */
+  /* ---- 2. Treatments & prices (+ book buttons + subject sync) ----------- */
   var pEl = document.getElementById('price-grid');
-  if (pEl && C.tabs && C.tabs.treatments) {
+  var onContact = !!document.getElementById('subject-treatments');
+  if ((pEl || onContact) && C.tabs && C.tabs.treatments) {
     load(C.tabs.treatments, function (rows) {
       rows = rows.filter(function (r) { return r.treatment; });
       if (!rows.length) return;
@@ -120,33 +120,34 @@
         if (!map[key]) { map[key] = { icon: r.icon || '', note: r.note || '', lines: [] }; order.push(key); }
         if (r.location || r.price) map[key].lines.push({ loc: r.location || '', price: r.price || '' });
       });
-      pEl.innerHTML = order.map(function (name) {
-        var d = map[name];
-        var lines = d.lines.map(function (x) {
-          return '<div class="price-row"><span>' + esc(x.loc) + '</span><span class="amt">' + esc(x.price) + '</span></div>';
+
+      if (pEl) {
+        pEl.innerHTML = order.map(function (name) {
+          var d = map[name];
+          var lines = d.lines.map(function (x) {
+            return '<div class="price-row"><span>' + esc(x.loc) + '</span><span class="amt">' + esc(x.price) + '</span></div>';
+          }).join('');
+          return '<div class="price-block reveal"><h3>' + icon(d.icon) + ' ' + esc(name) + '</h3>' +
+                 (d.note ? '<p class="lede">' + esc(d.note) + '</p>' : '') + lines +
+                 bookBtn(name) + '</div>';
         }).join('');
-        return '<div class="price-block reveal">' +
-                 '<h3>' + icon(d.icon) + ' ' + esc(name) + '</h3>' +
-                 (d.note ? '<p class="lede">' + esc(d.note) + '</p>' : '') +
-                 lines +
-               '</div>';
-      }).join('');
-      reveal(pEl);
+        reveal(pEl);
+      }
+
+      // Sync the contact dropdown (runs whether or not the price grid is here)
+      syncSubjectOptions(order);
     });
   }
 
-  /* ---- 3. Research by condition ---------------------------------------- */
-  /* Sheet columns: condition | link_url. Link text is always "View research". */
+  /* ---- 3. Research ----------------------------------------------------- */
   var rEl = document.getElementById('research-grid');
   if (rEl && C.tabs && C.tabs.research) {
     load(C.tabs.research, function (rows) {
       rows = rows.filter(function (r) { return r.condition && r.link_url; });
       if (!rows.length) return;
       rEl.innerHTML = rows.map(function (r) {
-        return '<div class="research-item reveal">' +
-                 '<h3>' + esc(r.condition) + '</h3>' +
-                 '<a href="' + urlAttr(r.link_url) + '" target="_blank" rel="noopener">View research &rarr;</a>' +
-               '</div>';
+        return '<div class="research-item reveal"><h3>' + esc(r.condition) + '</h3>' +
+               '<a href="' + urlAttr(r.link_url) + '" target="_blank" rel="noopener">View research &rarr;</a></div>';
       }).join('');
       reveal(rEl);
     });

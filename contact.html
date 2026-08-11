@@ -63,6 +63,26 @@
             <div class="field"><label for="name">Your name</label><input id="name" name="name" type="text" autocomplete="name" required></div>
             <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
             <div class="field"><label for="phone">Phone (optional)</label><input id="phone" name="phone" type="tel" autocomplete="tel"></div>
+            <div class="field">
+              <label for="subject">Subject</label>
+              <!-- The treatment <option>s stay in sync with the Google Sheet (tab "Treatments").
+                   Arriving from a "Book this treatment" button preselects the right one. -->
+              <select id="subject" name="subject">
+                <optgroup label="Treatments" id="subject-treatments">
+                  <option>Foot or hand reflexology</option>
+                  <option>Foot reflexology with ear seeds</option>
+                  <option>Auricular reflexology with ear seeds</option>
+                  <option>Foot & ear combined (with seeds)</option>
+                  <option>Take-home auricular seed kit</option>
+                </optgroup>
+                <option value="General enquiry">General enquiry</option>
+                <option value="Other">Other (please specify)</option>
+              </select>
+            </div>
+            <div class="field" id="subject-other-field">
+              <label for="subject-other">Please specify</label>
+              <input id="subject-other" name="subject_other" type="text" placeholder="Tell us what your message is about" hidden>
+            </div>
             <div class="field"><label for="message">Message</label><textarea id="message" name="message" rows="5" required></textarea></div>
             <button class="btn btn--primary" type="submit">Send message</button>
             <p class="form-status" tabindex="-1"></p>
@@ -123,5 +143,7 @@
     </div>
   </footer>
   <script src="js/site.js" defer></script>
+  <script src="js/config.js"></script>
+  <script src="js/data.js" defer></script>
 </body>
 </html>

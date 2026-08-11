@@ -2,7 +2,7 @@
    Heel Head Harmony — Google Sheet content loader
    -------------------------------------------------------------------------
    Reads the tabs named in js/config.js and fills in:
-     • Testimonials  (homepage)   → #testimonials
+     • Testimonials  (homepage)   → #testimonials  (auto-scrolling carousel)
      • Treatments    (prices page)→ #price-grid
      • Research      (research)   → #research-grid
 
@@ -41,7 +41,6 @@
   function urlAttr(s) { return String(s == null ? '' : s).replace(/"/g, '%22').replace(/\s/g, ''); }
   function shown(v) { return !/^(no|false|0|hide|hidden)$/i.test(String(v || '').trim()); }
 
-  // Minimal CSV parser (handles quotes, commas and newlines inside quotes)
   function parseCSV(text) {
     var rows = [], row = [], field = '', i = 0, inQ = false, c;
     while (i < text.length) {
@@ -66,7 +65,7 @@
     if (!rows.length) return [];
     var head = rows[0].map(function (h) { return h.trim().toLowerCase(); });
     return rows.slice(1).filter(function (r) {
-      return r.some(function (c) { return c && c.trim(); });   // skip blank lines
+      return r.some(function (c) { return c && c.trim(); });
     }).map(function (r) {
       var o = {};
       head.forEach(function (h, idx) { o[h] = (r[idx] || '').trim(); });
@@ -90,7 +89,7 @@
     el.querySelectorAll('.reveal').forEach(function (n) { n.classList.add('is-in'); });
   }
 
-  /* ---- 1. Testimonials (homepage) -------------------------------------- */
+  /* ---- 1. Testimonials (homepage carousel) ----------------------------- */
   var tEl = document.getElementById('testimonials');
   if (tEl && C.tabs && C.tabs.testimonials) {
     load(C.tabs.testimonials, function (rows) {
@@ -99,12 +98,13 @@
       tEl.innerHTML = rows.map(function (r) {
         var who = esc(r.name || '');
         if (r.location) who += (who ? ', ' : '') + esc(r.location);
-        return '<figure class="quote reveal">' +
+        return '<figure class="quote">' +
                  '<p>&ldquo;' + esc(r.quote) + '&rdquo;</p>' +
                  (who ? '<figcaption class="who">&mdash; ' + who + '</figcaption>' : '') +
                '</figure>';
       }).join('');
-      reveal(tEl);
+      // Re-run the carousel now that the cards have changed
+      if (window.HHH_initTestimonialCarousel) window.HHH_initTestimonialCarousel();
     });
   }
 

@@ -1,7 +1,7 @@
 /* =========================================================================
    Heel Head Harmony — shared site behaviour
    Sticky-header shadow · mobile menu (scroll-lock, Esc, link-close) ·
-   scroll-reveal · concept-form success state.
+   scroll-reveal · concept-form success state · testimonial carousel.
    Vanilla JS, no dependencies. Respects prefers-reduced-motion.
    ========================================================================= */
 (function () {
@@ -68,4 +68,43 @@
   /* ---- 5. Footer year -------------------------------------------------- */
   var y = document.querySelector('[data-year]');
   if (y) y.textContent = new Date().getFullYear();
+
+  /* ---- 6. Testimonial carousel (auto-scroll, Google-reviews style) ------
+     Duplicates the cards once and animates the track by -50% for a seamless
+     loop. Pauses on hover/focus. If reduced motion is on, it becomes a plain
+     swipeable row instead. Safe to call more than once (idempotent), so the
+     Google-Sheet loader can re-run it after replacing the content.           */
+  function initTestimonialCarousel() {
+    var track = document.getElementById('testimonials');
+    if (!track) return;
+
+    // Remove any previous clones so re-running is clean
+    track.querySelectorAll('[data-clone]').forEach(function (n) { n.remove(); });
+    track.style.animation = '';
+    track.classList.remove('is-scrolling');
+
+    var items = Array.prototype.slice.call(track.children);
+    if (!items.length) return;
+
+    // Make each card visible (they may carry the reveal class)
+    items.forEach(function (el) { el.classList.add('is-in'); });
+
+    // With reduced motion, or only one card, leave it as a static row.
+    if (reduceMotion || items.length < 2) return;
+
+    // Clone the full set once for a seamless -50% loop
+    items.forEach(function (el) {
+      var c = el.cloneNode(true);
+      c.setAttribute('data-clone', '');
+      c.setAttribute('aria-hidden', 'true');
+      track.appendChild(c);
+    });
+
+    // Speed scales with the number of real cards (~7s each) for a gentle glide
+    var duration = Math.max(18, items.length * 7);
+    track.style.animation = 'hhh-marquee ' + duration + 's linear infinite';
+    track.classList.add('is-scrolling');
+  }
+  window.HHH_initTestimonialCarousel = initTestimonialCarousel;
+  initTestimonialCarousel();   // run for built-in (fallback) content
 })();

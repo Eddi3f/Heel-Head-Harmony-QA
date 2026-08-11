@@ -27,8 +27,8 @@
         <li><a href="about.html">About</a></li>
         <li><a href="treatments.html">Treatments &amp; Prices</a></li>
         <li><a href="research.html">Research</a></li>
-        <li><a href="contact.html" aria-current="page">Contact</a></li>
-        <li class="nav-cta"><a class="btn btn--primary" href="contact.html">Book a session</a></li>
+        <li><a href="contact.html#details" aria-current="page">Contact</a></li>
+        <li class="nav-cta"><a class="btn btn--primary" href="contact.html#book">Book a session</a></li>
       </ul>
     </nav>
   </header>
@@ -42,21 +42,9 @@
     </section>
     <section class="section">
       <div class="container grid grid--2" style="align-items:start">
-        <div class="reveal">
-          <h2>Get in touch</h2>
-          <ul class="tick" style="margin-top:1rem">
-            <li><strong>Email:</strong> <a href="mailto:heelheadharmony@gmail.com">heelheadharmony@gmail.com</a></li>
-            <li><strong>Phone:</strong> <a href="tel:+447870895863">07870 895863</a></li>
-            <li><strong>Instagram:</strong> <a href="https://www.instagram.com/heel_head_harmony" target="_blank" rel="noopener">@heel_head_harmony</a></li>
-            <li><strong>Facebook:</strong> <a href="https://www.facebook.com/HeelHeadHarmony/" target="_blank" rel="noopener">Heel Head Harmony</a></li>
-            <li><strong>Areas:</strong> Hatfield &amp; Doncaster</li>
-            <li><strong>Also at:</strong> <a href="https://www.actionfirstphysio.co.uk/services/reflexology/" target="_blank" rel="noopener">Action First Physiotherapy</a>, Snaith</li>
-          </ul>
-          <div class="note" style="margin-top:1.2rem">
-            <strong>Booking note:</strong> A &pound;20 deposit is required on your first booking at Action First. Cancellations with less than 24 hours' notice incur a &pound;15 charge.
-          </div>
-        </div>
-        <div class="reveal">
+
+        <!-- FORM (left on desktop, top on mobile). Anchor: #book -->
+        <div class="reveal" id="book" style="scroll-margin-top:96px">
           <h2>Send a message</h2>
           <!-- EDIT: To make this send for real, connect an endpoint (Cloudflare Worker or Formspree) — see docs/ARCHITECTURE.md, "Form seam". -->
           <form class="form" data-concept novalidate>
@@ -65,8 +53,6 @@
             <div class="field"><label for="phone">Phone (optional)</label><input id="phone" name="phone" type="tel" autocomplete="tel"></div>
             <div class="field">
               <label for="subject">Subject</label>
-              <!-- The treatment <option>s stay in sync with the Google Sheet (tab "Treatments").
-                   Arriving from a "Book this treatment" button preselects the right one. -->
               <select id="subject" name="subject">
                 <optgroup label="Treatments" id="subject-treatments">
                   <option>Foot or hand reflexology</option>
@@ -89,6 +75,23 @@
           </form>
           <p class="lede" style="font-size:.85rem;margin-top:.8rem">By sending a message you agree to our <a href="privacy.html">Privacy Policy</a>.</p>
         </div>
+
+        <!-- DETAILS (right on desktop, below on mobile). Anchor: #details -->
+        <div class="reveal" id="details" style="scroll-margin-top:96px">
+          <h2>Get in touch</h2>
+          <ul class="tick" style="margin-top:1rem">
+            <li><strong>Email:</strong> <a href="mailto:heelheadharmony@gmail.com">heelheadharmony@gmail.com</a></li>
+            <li><strong>Phone:</strong> <a href="tel:+447870895863">07870 895863</a></li>
+            <li><strong>Instagram:</strong> <a href="https://www.instagram.com/heel_head_harmony" target="_blank" rel="noopener">@heel_head_harmony</a></li>
+            <li><strong>Facebook:</strong> <a href="https://www.facebook.com/HeelHeadHarmony/" target="_blank" rel="noopener">Heel Head Harmony</a></li>
+            <li><strong>Areas:</strong> Hatfield &amp; Doncaster</li>
+            <li><strong>Also at:</strong> <a href="https://www.actionfirstphysio.co.uk/services/reflexology/" target="_blank" rel="noopener">Action First Physiotherapy</a>, Snaith</li>
+          </ul>
+          <div class="note" style="margin-top:1.2rem">
+            <strong>Booking note:</strong> A &pound;20 deposit is required on your first booking at Action First. Cancellations with less than 24 hours' notice incur a &pound;15 charge.
+          </div>
+        </div>
+
       </div>
     </section>
   </main>

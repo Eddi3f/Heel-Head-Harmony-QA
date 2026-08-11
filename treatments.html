@@ -37,54 +37,24 @@
       <div class="container">
         <span class="eyebrow reveal">Mind, body and soul</span>
         <h1 class="reveal">Treatments &amp; prices</h1>
-        <p class="lede reveal">Reflexology for feet, hands or ears. <!-- EDIT: update the effective date if prices change --> Prices effective from 1&nbsp;September&nbsp;2025.</p>
+        <p class="lede reveal">Reflexology for feet, hands or ears. Prices effective from 1&nbsp;September&nbsp;2025.</p>
       </div>
     </section>
 
     <section class="section">
       <div class="container">
-        <div class="grid grid--2">
-          <div class="price-block reveal">
-            <h3><svg class="ico ico--h3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 3.5c1.6 0 2.4 1.2 2.4 3 0 2.2-1.1 4-1.1 6.1 0 1.8 1.1 2.9 1.1 4.6 0 1.8-1.3 3-3.2 3-2 0-3.2-1.3-3.2-3.3 0-2.6.9-3.4.9-5.9C5.4 8.3 5 6.9 5 5.6 5 4.2 6.7 3.5 8.5 3.5Z"/><circle cx="14.5" cy="5" r="1.1"/><circle cx="17.4" cy="6.2" r="1"/><circle cx="19.3" cy="8.4" r=".9"/><circle cx="20.2" cy="11" r=".8"/></svg> Foot or hand reflexology</h3>
-            <p class="lede">Approx. 50-minute session.</p>
-            <div class="price-row"><span>At my home</span><span class="amt">&pound;40</span></div>
-            <div class="price-row"><span>At Action First</span><span class="amt">&pound;46</span></div>
-          </div>
-          <div class="price-block reveal">
-            <h3><svg class="ico ico--h3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 19.5C4 12 8.5 5.5 19.5 4.5c1 9.5-3.5 15.5-11 15.5-2 0-3.4-.6-4-.5Z"/><path d="M8 16c3-4 6-6 9.5-7.5"/></svg> Foot reflexology with ear seeds</h3>
-            <p class="lede">Approx. 50-minute session.</p>
-            <div class="price-row"><span>At my home</span><span class="amt">&pound;43</span></div>
-            <div class="price-row"><span>At Action First</span><span class="amt">&pound;49</span></div>
-          </div>
-          <div class="price-block reveal">
-            <h3><svg class="ico ico--h3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 20.5c-1.7-1.3-2-2.8-2-5V9.2a5.2 5.2 0 0 1 10.4 0c0 2.6-2 3.4-3.4 4.3-1 .7-1.4 1.3-1.4 2.2 0 1.2-.9 2.1-2 2.1a1.9 1.9 0 0 1-1.9-2c0-1.7 1.1-2.6 2.3-3.3"/><path d="M9.3 8.9a2.8 2.8 0 0 1 4.9 1.9"/></svg> Auricular reflexology with ear seeds</h3>
-            <p class="lede">Approx. 25-minute session.</p>
-            <div class="price-row"><span>At my home</span><span class="amt">&pound;22</span></div>
-            <div class="price-row"><span>At Action First</span><span class="amt">&pound;28</span></div>
-          </div>
-          <div class="price-block reveal">
-            <h3><svg class="ico ico--h3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5c.4 3.6 1.9 5.1 5.5 5.5-3.6.4-5.1 1.9-5.5 5.5-.4-3.6-1.9-5.1-5.5-5.5C10.1 8.6 11.6 7.1 12 3.5Z"/><path d="M18.5 14.5c.2 1.6.9 2.3 2.5 2.5-1.6.2-2.3.9-2.5 2.5-.2-1.6-.9-2.3-2.5-2.5 1.6-.2 2.3-.9 2.5-2.5Z"/></svg> Foot &amp; ear combined (with seeds)</h3>
-            <p class="lede">Includes ear seeds.</p>
-            <div class="price-row"><span>At my home &mdash; approx. 50&nbsp;mins</span><span class="amt">&pound;45</span></div>
-            <div class="price-row"><span>At my home &mdash; approx. 1&nbsp;hr&nbsp;10&nbsp;mins</span><span class="amt">&pound;60</span></div>
-            <div class="price-row"><span>At Action First &mdash; approx. 50&nbsp;mins</span><span class="amt">&pound;50</span></div>
-          </div>
+        <!-- PRICES — editable via Google Sheet (tab "Treatments").
+             The four blocks below are the built-in fallback if the sheet is empty/offline. -->
+        <div class="grid grid--2" id="price-grid">
+          <div class="price-block reveal"><h3><svg class="ico ico--h3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 3.5c1.6 0 2.4 1.2 2.4 3 0 2.2-1.1 4-1.1 6.1 0 1.8 1.1 2.9 1.1 4.6 0 1.8-1.3 3-3.2 3-2 0-3.2-1.3-3.2-3.3 0-2.6.9-3.4.9-5.9C5.4 8.3 5 6.9 5 5.6 5 4.2 6.7 3.5 8.5 3.5Z"/><circle cx="14.5" cy="5" r="1.1"/><circle cx="17.4" cy="6.2" r="1"/><circle cx="19.3" cy="8.4" r=".9"/><circle cx="20.2" cy="11" r=".8"/></svg> Foot or hand reflexology</h3><p class="lede">Approx. 50-minute session.</p><div class="price-row"><span>At my home</span><span class="amt">&pound;40</span></div><div class="price-row"><span>At Action First</span><span class="amt">&pound;46</span></div></div>
+          <div class="price-block reveal"><h3><svg class="ico ico--h3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 19.5C4 12 8.5 5.5 19.5 4.5c1 9.5-3.5 15.5-11 15.5-2 0-3.4-.6-4-.5Z"/><path d="M8 16c3-4 6-6 9.5-7.5"/></svg> Foot reflexology with ear seeds</h3><p class="lede">Approx. 50-minute session.</p><div class="price-row"><span>At my home</span><span class="amt">&pound;43</span></div><div class="price-row"><span>At Action First</span><span class="amt">&pound;49</span></div></div>
+          <div class="price-block reveal"><h3><svg class="ico ico--h3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 20.5c-1.7-1.3-2-2.8-2-5V9.2a5.2 5.2 0 0 1 10.4 0c0 2.6-2 3.4-3.4 4.3-1 .7-1.4 1.3-1.4 2.2 0 1.2-.9 2.1-2 2.1a1.9 1.9 0 0 1-1.9-2c0-1.7 1.1-2.6 2.3-3.3"/><path d="M9.3 8.9a2.8 2.8 0 0 1 4.9 1.9"/></svg> Auricular reflexology with ear seeds</h3><p class="lede">Approx. 25-minute session.</p><div class="price-row"><span>At my home</span><span class="amt">&pound;22</span></div><div class="price-row"><span>At Action First</span><span class="amt">&pound;28</span></div></div>
+          <div class="price-block reveal"><h3><svg class="ico ico--h3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5c.4 3.6 1.9 5.1 5.5 5.5-3.6.4-5.1 1.9-5.5 5.5-.4-3.6-1.9-5.1-5.5-5.5C10.1 8.6 11.6 7.1 12 3.5Z"/><path d="M18.5 14.5c.2 1.6.9 2.3 2.5 2.5-1.6.2-2.3.9-2.5 2.5-.2-1.6-.9-2.3-2.5-2.5 1.6-.2 2.3-.9 2.5-2.5Z"/></svg> Foot &amp; ear combined (with seeds)</h3><p class="lede">Includes ear seeds.</p><div class="price-row"><span>At my home &mdash; approx. 50&nbsp;mins</span><span class="amt">&pound;45</span></div><div class="price-row"><span>At my home &mdash; approx. 1&nbsp;hr&nbsp;10&nbsp;mins</span><span class="amt">&pound;60</span></div><div class="price-row"><span>At Action First &mdash; approx. 50&nbsp;mins</span><span class="amt">&pound;50</span></div></div>
         </div>
 
         <div class="grid grid--2" style="margin-top:1.5rem">
-          <div class="card reveal">
-            <div class="icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="9" width="15" height="4" rx="1"/><path d="M6 13v6.5A1.5 1.5 0 0 0 7.5 21h9a1.5 1.5 0 0 0 1.5-1.5V13"/><path d="M12 9v12"/><path d="M12 9C10.5 6 8 5 6.7 6.3 5.6 7.4 7 9 9 9Zm0 0c1.5-3 4-4 5.3-2.7C18.4 7.4 17 9 15 9Z"/></svg></div>
-            <h3>Take-home auricular seed kit</h3>
-            <p class="lede">Includes a one-month supply of seeds and four treatments.</p>
-            <p class="price">&pound;10</p>
-          </div>
-          <div class="note reveal">
-            <strong>Good to know</strong>
-            <ul class="tick" style="margin-top:.6rem">
-              <li>A &pound;20 deposit is required on your first booking at Action First.</li>
-              <li>Cancellations with less than 24 hours' notice will incur a &pound;15 charge.</li>
-            </ul>
-          </div>
+          <div class="card reveal"><div class="icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="9" width="15" height="4" rx="1"/><path d="M6 13v6.5A1.5 1.5 0 0 0 7.5 21h9a1.5 1.5 0 0 0 1.5-1.5V13"/><path d="M12 9v12"/><path d="M12 9C10.5 6 8 5 6.7 6.3 5.6 7.4 7 9 9 9Zm0 0c1.5-3 4-4 5.3-2.7C18.4 7.4 17 9 15 9Z"/></svg></div><h3>Take-home auricular seed kit</h3><p class="lede">Includes a one-month supply of seeds and four treatments.</p><p class="price">&pound;10</p></div>
+          <div class="note reveal"><strong>Good to know</strong><ul class="tick" style="margin-top:.6rem"><li>A &pound;20 deposit is required on your first booking at Action First.</li><li>Cancellations with less than 24 hours' notice will incur a &pound;15 charge.</li></ul></div>
         </div>
       </div>
     </section>
@@ -97,7 +67,7 @@
           <details class="reveal"><summary>What happens during a first session?</summary><p>🔶 Placeholder: We'll talk through your health and what you'd like from the session, then you'll relax while I work the relevant reflexes. Please confirm your preferred wording.</p></details>
           <details class="reveal"><summary>What should I wear?</summary><p>🔶 Placeholder: Comfortable clothing is ideal. For foot reflexology you'll only need to remove your shoes and socks. Please confirm.</p></details>
           <details class="reveal"><summary>How many sessions will I need?</summary><p>🔶 Placeholder: This varies from person to person. Many clients enjoy a regular monthly session for ongoing balance. Please confirm your guidance.</p></details>
-          <details class="reveal"><summary>Do you offer home visits?</summary><p>Treatments are available at my home in Hatfield, Doncaster, or at Action First Physiotherapy, Snaith. <!-- EDIT: add mobile/home-visit details if offered --></p></details>
+          <details class="reveal"><summary>Do you offer home visits?</summary><p>Treatments are available at my home in Hatfield, Doncaster, or at Action First Physiotherapy, Snaith.</p></details>
           <details class="reveal"><summary>How do I pay?</summary><p>🔶 Placeholder: Payment method to confirm (e.g. cash / bank transfer on the day). A &pound;20 deposit applies to first bookings at Action First.</p></details>
         </div>
         <div style="margin-top:1.5rem"><a class="btn btn--primary" href="contact.html">Book your session</a></div>
@@ -155,5 +125,7 @@
     </div>
   </footer>
   <script src="js/site.js" defer></script>
+  <script src="js/config.js"></script>
+  <script src="js/data.js" defer></script>
 </body>
 </html>

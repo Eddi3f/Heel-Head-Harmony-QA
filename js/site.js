@@ -1,13 +1,14 @@
 /* =========================================================================
    Heel Head Harmony — shared site behaviour
-   Sticky-header shadow · mobile menu · scroll-reveal · concept-form success ·
-   testimonial carousel · contact subject (URL prefill + "Other" toggle).
+   Sticky-header shadow · mobile menu · scroll-reveal · testimonial carousel ·
+   contact subject (URL prefill + "Other" toggle) · real form submit (Worker).
    Vanilla JS, no dependencies. Respects prefers-reduced-motion.
    ========================================================================= */
 (function () {
   'use strict';
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var CFG = window.HHH_CONFIG || {};
 
   /* ---- 1. Sticky header shadow ----------------------------------------- */
   var header = document.querySelector('.site-header');
@@ -41,24 +42,75 @@
     reveals.forEach(function (el) { el.classList.add('is-in'); });
   }
 
-  /* ---- 4. Concept forms: honest success state -------------------------- */
-  var forms = document.querySelectorAll('form[data-concept]');
-  forms.forEach(function (form) {
+  /* ---- 4. Contact form: real submit (Worker) or demo fallback ---------- */
+  function endpointReady() {
+    var u = CFG.formEndpoint;
+    return u && !/PASTE/i.test(u) && /^https?:\/\//i.test(u);
+  }
+
+  document.querySelectorAll('form.form').forEach(function (form) {
+    var status = form.querySelector('.form-status');
+    var btn = form.querySelector('button[type="submit"]');
+
+    function setStatus(msg, kind) {
+      if (!status) return;
+      status.textContent = msg;
+      status.classList.add('is-visible');
+      status.classList.remove('is-error', 'is-ok');
+      if (kind) status.classList.add(kind === 'ok' ? 'is-ok' : 'is-error');
+      status.setAttribute('role', 'status');
+      try { status.focus(); } catch (e) {}
+    }
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      var status = form.querySelector('.form-status');
-      if (status) {
-        status.classList.add('is-visible');
-        status.setAttribute('role', 'status');
-        status.textContent = 'Thanks for getting in touch — Pamela will reply as soon as possible. (Demo only: this form is not connected yet.)';
-        status.focus && status.focus();
+
+      if (!form.checkValidity()) { form.reportValidity && form.reportValidity(); return; }
+
+      if (!endpointReady()) {
+        setStatus('Thanks for getting in touch — Pamela will reply as soon as possible. (Demo only: this form is not connected yet.)', 'ok');
+        form.reset();
+        var oD = form.querySelector('#subject-other'); if (oD) oD.hidden = true;
+        return;
       }
-      form.reset();
-      // Reset the "Other" subject box back to hidden after a successful submit
-      var other = form.querySelector('#subject-other');
-      if (other) other.hidden = true;
+
+      var payload = {
+        name:          val(form, 'name'),
+        email:         val(form, 'email'),
+        phone:         val(form, 'phone'),
+        subject:       val(form, 'subject'),
+        subject_other: val(form, 'subject_other'),
+        message:       val(form, 'message'),
+        company:       val(form, 'company')
+      };
+
+      if (btn) { btn.disabled = true; btn.dataset.label = btn.textContent; btn.textContent = 'Sending…'; }
+      setStatus('Sending your message…');
+
+      fetch(CFG.formEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(function (r) { return r.json().catch(function () { return { ok: r.ok }; }); })
+      .then(function (res) {
+        if (res && res.ok) {
+          setStatus('Thank you — your message has been sent. Pamela will reply as soon as possible.', 'ok');
+          form.reset();
+          var o = form.querySelector('#subject-other'); if (o) o.hidden = true;
+        } else {
+          setStatus((res && res.error) || 'Sorry, something went wrong. Please email heelheadharmony@gmail.com instead.', 'err');
+        }
+      })
+      .catch(function () {
+        setStatus('Sorry, your message could not be sent. Please email heelheadharmony@gmail.com or call 07870 895863.', 'err');
+      })
+      .then(function () {
+        if (btn) { btn.disabled = false; btn.textContent = btn.dataset.label || 'Send message'; }
+      });
     });
   });
+  function val(form, name) { var el = form.querySelector('[name="' + name + '"]'); return el ? el.value : ''; }
 
   /* ---- 5. Footer year -------------------------------------------------- */
   var y = document.querySelector('[data-year]');
@@ -87,13 +139,7 @@
   window.HHH_initTestimonialCarousel = initTestimonialCarousel;
   initTestimonialCarousel();
 
-  /* ---- 7. Contact subject: URL prefill + "Other" toggle ----------------
-     • Reads ?subject=... from the link the visitor arrived on (e.g. a
-       "Book this treatment" button) and preselects it.
-     • If it doesn't match a dropdown option, picks "Other" and fills the box.
-     • Shows/hides the free-text box when "Other" is chosen.
-     • Exposed as window.HHH_applySubjectFromURL() so the sheet loader can
-       re-apply the selection after it refreshes the options.                */
+  /* ---- 7. Contact subject: URL prefill + "Other" toggle ---------------- */
   var subjectSelect = document.getElementById('subject');
   var subjectOther  = document.getElementById('subject-other');
 
@@ -104,7 +150,6 @@
     subjectOther.required = isOther;
     if (isOther) { try { subjectOther.focus(); } catch (e) {} }
   }
-
   function applySubjectFromURL() {
     if (!subjectSelect) return;
     var wanted = new URLSearchParams(window.location.search).get('subject');
@@ -114,17 +159,12 @@
       Array.prototype.forEach.call(subjectSelect.options, function (o) {
         if (o.value.toLowerCase() === wanted.toLowerCase()) match = o.value;
       });
-      if (match) {
-        subjectSelect.value = match;
-      } else if (subjectOther) {
-        subjectSelect.value = 'Other';
-        subjectOther.value = wanted;
-      }
+      if (match) { subjectSelect.value = match; }
+      else if (subjectOther) { subjectSelect.value = 'Other'; subjectOther.value = wanted; }
     }
     toggleOther();
   }
   window.HHH_applySubjectFromURL = applySubjectFromURL;
-
   if (subjectSelect) {
     subjectSelect.addEventListener('change', toggleOther);
     applySubjectFromURL();

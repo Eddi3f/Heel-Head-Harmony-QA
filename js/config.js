@@ -1,16 +1,22 @@
 /* =========================================================================
    Heel Head Harmony — site configuration
    -------------------------------------------------------------------------
-   This is the ONE place to connect the Google Sheet that Pamela edits.
-   See docs/GOOGLE-SHEETS.md for the 5-minute setup.
-   Until a real ID is added, the website shows its built-in content.
+   1) GOOGLE SHEET — the content Pamela edits (testimonials, treatments,
+      research). See docs/GOOGLE-SHEETS.md.
+   2) CONTACT FORM — the Cloudflare Worker that emails the enquiry.
+      See docs/CONTACT-FORM.md.
    ========================================================================= */
 window.HHH_CONFIG = {
   enabled: true,
+
+  /* --- Google Sheet (content) --- */
   sheetId: "1lQuqegWwdnNEIRqsin308kmXVpjQmvIiKovVTBXTUjU",
   tabs: {
     testimonials: "Testimonials",
     treatments:   "Treatments",
     research:     "Research"
-  }
+  },
+
+  /* --- Contact form (email) --- */
+  formEndpoint: "https://hhh-contact.efulwood.workers.dev"
 };

@@ -13,6 +13,7 @@ window.HHH_CONFIG = {
   sheetId: "1lQuqegWwdnNEIRqsin308kmXVpjQmvIiKovVTBXTUjU",
   tabs: {
     testimonials: "Testimonials",
+	about: "About"
     treatments:   "Treatments",
     research:     "Research"
   },

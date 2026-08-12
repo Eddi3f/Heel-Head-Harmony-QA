@@ -152,4 +152,22 @@
       reveal(rEl);
     });
   }
+  
+  /* ---- 4. About page (bio + credentials) -------------------------------- */
+var bioEl = document.getElementById('about-bio');
+var credEl = document.getElementById('about-credentials');
+if ((bioEl || credEl) && C.tabs && C.tabs.about) {
+  load(C.tabs.about, function (rows) {
+    var bioRow = rows.find(function (r) { return r.type && r.type.toLowerCase() === 'bio' && r.text; });
+    var creds = rows.filter(function (r) { return r.type && r.type.toLowerCase() === 'credential' && r.text; });
+
+    if (bioEl && bioRow) {
+      var paras = bioRow.text.split(/\r?\n/).filter(function (p) { return p.trim(); });
+      bioEl.innerHTML = paras.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('');
+    }
+    if (credEl && creds.length) {
+      credEl.innerHTML = creds.map(function (r) { return '<li>' + esc(r.text) + '</li>'; }).join('');
+    }
+  });
+}
 })();

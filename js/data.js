@@ -74,6 +74,10 @@
     .catch(function () {});
 }
   function reveal(el) { el.querySelectorAll('.reveal').forEach(function (n) { n.classList.add('is-in'); }); }
+  
+  function boldify(s) {
+  return esc(s).replace(/\*(.+?)\*/g, '<strong>$1</strong>');
+}
 
   // "Book this treatment" button → contact page with the subject prefilled
   function bookBtn(name) {
@@ -153,7 +157,7 @@
     });
   }
   
-  /* ---- 4. About page (bio + credentials) -------------------------------- */
+  //* ---- 4. About page (bio + credentials) -------------------------------- */
 var bioEl = document.getElementById('about-bio');
 var credEl = document.getElementById('about-credentials');
 if ((bioEl || credEl) && C.tabs && C.tabs.about) {
@@ -163,10 +167,10 @@ if ((bioEl || credEl) && C.tabs && C.tabs.about) {
 
     if (bioEl && bioRow) {
       var paras = bioRow.text.split(/\r?\n/).filter(function (p) { return p.trim(); });
-      bioEl.innerHTML = paras.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('');
+      bioEl.innerHTML = paras.map(function (p) { return '<p>' + boldify(p) + '</p>'; }).join('');
     }
     if (credEl && creds.length) {
-      credEl.innerHTML = creds.map(function (r) { return '<li>' + esc(r.text) + '</li>'; }).join('');
+      credEl.innerHTML = creds.map(function (r) { return '<li>' + boldify(r.text) + '</li>'; }).join('');
     }
   });
 }

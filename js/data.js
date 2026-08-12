@@ -68,11 +68,11 @@
     return 'https://docs.google.com/spreadsheets/d/' + C.sheetId + '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent(tab);
   }
   function load(tab, done) {
-    fetch(sheetUrl(tab), { cache: 'no-store' })
-      .then(function (r) { return r.ok ? r.text() : Promise.reject(); })
-      .then(function (t) { done(toObjects(parseCSV(t))); })
-      .catch(function () {});
-  }
+  fetch(sheetUrl(tab), { cache: 'no-store' })
+    .then(function (r) { return r.ok ? r.arrayBuffer() : Promise.reject(); })
+    .then(function (buf) { done(toObjects(parseCSV(new TextDecoder('utf-8').decode(buf)))); })
+    .catch(function () {});
+}
   function reveal(el) { el.querySelectorAll('.reveal').forEach(function (n) { n.classList.add('is-in'); }); }
 
   // "Book this treatment" button → contact page with the subject prefilled

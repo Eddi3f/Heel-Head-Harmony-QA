@@ -16,7 +16,7 @@ window.HHH_CONFIG = {
     treatments:   "Treatments",
     research:     "Research",
 	about: "About",
-	FAQ: "faq"
+	faq: "FAQ"
   },
 
   /* --- Contact form (email) --- */

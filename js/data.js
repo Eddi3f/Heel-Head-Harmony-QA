@@ -174,4 +174,17 @@ if ((bioEl || credEl) && C.tabs && C.tabs.about) {
     }
   });
 }
+
+/* ---- 5. FAQ (treatments page) ------------------------------------------ */
+var faqEl = document.getElementById('faq-list');
+if (faqEl && C.tabs && C.tabs.faq) {
+  load(C.tabs.faq, function (rows) {
+    rows = rows.filter(function (r) { return r.question && r.answer && shown(r.show); });
+    if (!rows.length) return;
+    faqEl.innerHTML = rows.map(function (r) {
+      return '<details class="reveal"><summary>' + esc(r.question) + '</summary><p>' + boldify(r.answer) + '</p></details>';
+    }).join('');
+    reveal(faqEl);
+  });
+}
 })();

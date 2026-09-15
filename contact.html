@@ -6,7 +6,11 @@
   <title>Contact | Heel Head Harmony</title>
   <meta name="description" content="Contact Heel Head Harmony to book reflexology in Hatfield, Doncaster. Email heelheadharmony@gmail.com or call 07870 895863.">
   <meta name="theme-color" content="#12201e">
-  <link rel="icon" type="image/png" href="Images/logo.png">
+  <link rel="icon" href="Images/favicon.svg" type="image/svg+xml">
+  <link rel="icon" type="image/png" sizes="32x32" href="Images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="Images/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="Images/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
   <link rel="canonical" href="https://www.heelheadharmony.co.uk/contact">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,8 +50,8 @@
         <!-- FORM (left on desktop, top on mobile). Anchor: #book -->
         <div class="reveal" id="book" style="scroll-margin-top:96px">
           <h2>Send a message</h2>
-          <!-- EDIT: To make this send for real, connect an endpoint (Cloudflare Worker or Formspree) — see docs/ARCHITECTURE.md, "Form seam". -->
-          <form class="form" data-concept novalidate>
+          <!-- Connected to the Cloudflare Worker via HHH_CONFIG.formEndpoint in js/config.js. -->
+          <form class="form" novalidate>
             <div class="field"><label for="name">Your name</label><input id="name" name="name" type="text" autocomplete="name" required></div>
             <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
             <div class="field"><label for="phone">Phone (optional)</label><input id="phone" name="phone" type="tel" autocomplete="tel"></div>
@@ -145,7 +149,7 @@
       </div>
     </div>
   </footer>
-  <script src="js/config.js"></script>
+  <script src="js/config.js" defer></script>
   <script src="js/site.js" defer></script>
   <script src="js/data.js" defer></script>
 </body>

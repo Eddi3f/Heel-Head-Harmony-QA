@@ -3,7 +3,7 @@
    -------------------------------------------------------------------------
    Reads the tabs named in js/config.js and fills in:
      • Testimonials  (homepage)   → #testimonials  (auto-scrolling carousel)
-     • Treatments    (prices page)→ #price-grid  (+ "Book this treatment" buttons)
+     • Treatments    (prices page)→ #price-grid  (+ "Enquire about this treatment" buttons)
      • Research      (research)   → #research-grid
    Also keeps the Contact page's subject dropdown (#subject-treatments) in
    sync with the treatment names from the sheet.
@@ -79,10 +79,10 @@
   return esc(s).replace(/\*(.+?)\*/g, '<strong>$1</strong>');
 }
 
-  // "Book this treatment" button → contact page with the subject prefilled
+  // "Enquire about this treatment" button → contact page with the subject prefilled
   function bookBtn(name) {
     return '<a class="btn btn--primary price-book" href="contact.html?subject=' +
-           encodeURIComponent(name) + '">Book this treatment</a>';
+           encodeURIComponent(name) + '">Enquire about this treatment</a>';
   }
 
   // Keep the contact page's subject dropdown in sync with sheet treatments

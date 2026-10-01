@@ -138,17 +138,72 @@
     function rest() { pauseUntil = performance.now() + 12000; }
     items.forEach(function (el) { el.classList.add('is-in'); });
     viewport.scrollLeft = 0;
-    if (items.length < 2) return;
+    var dialog = document.createElement('dialog');
+    dialog.className = 'review-dialog';
+    dialog.setAttribute('aria-labelledby', 'review-dialog-title');
+    dialog.innerHTML = '<button type="button" class="review-close" aria-label="Close full review" autofocus>&times;</button>' +
+      '<h2 id="review-dialog-title">A client\'s experience</h2><blockquote><p></p><footer></footer></blockquote>';
+    document.body.appendChild(dialog);
+    var opener, previousOverflow;
+    items.forEach(function (el, index) {
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'review-more';
+      button.textContent = 'Read full review';
+      button.setAttribute('aria-haspopup', 'dialog');
+      el.setAttribute('data-review', index);
+      el.appendChild(button);
+      el.classList.add('quote--compact');
+    });
+    listen(track, 'click', function (e) {
+      var button = e.target.closest('.review-more');
+      if (!button) return;
+      var card = button.closest('.quote');
+      var original = items[Number(card.getAttribute('data-review'))];
+      opener = original.querySelector('.review-more');
+      dialog.querySelector('blockquote p').textContent = original.querySelector('p').textContent;
+      var who = original.querySelector('.who');
+      dialog.querySelector('footer').textContent = who ? who.textContent : '';
+      rest();
+      previousOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      dialog.showModal();
+    });
+    listen(dialog.querySelector('button'), 'click', function () { dialog.close(); });
+    listen(dialog, 'click', function (e) {
+      var box = dialog.getBoundingClientRect();
+      if (e.target === dialog && (e.clientX < box.left || e.clientX > box.right ||
+          e.clientY < box.top || e.clientY > box.bottom)) dialog.close();
+    });
+    listen(dialog, 'close', function () {
+      document.body.style.overflow = previousOverflow || '';
+      rest();
+      if (opener) opener.focus({ preventScroll: true });
+    });
     // Copies allow a continuous loop; only the original quotes are announced.
-    items.forEach(function (el) {
+    if (items.length > 1) items.forEach(function (el) {
       var copy = el.cloneNode(true);
       copy.setAttribute('data-clone', '');
       copy.setAttribute('aria-hidden', 'true');
+      copy.querySelector('.review-more').tabIndex = -1;
       track.appendChild(copy);
     });
+    function sizePreviews() {
+      track.querySelectorAll('.quote').forEach(function (card) {
+        var text = card.querySelector('p');
+        card.querySelector('.review-more').hidden = text.scrollHeight <= text.clientHeight + 1;
+      });
+    }
+    sizePreviews();
+    var previewObserver = window.ResizeObserver ? new ResizeObserver(sizePreviews) : null;
+    if (previewObserver) previewObserver.observe(viewport);
+    else listen(window, 'resize', sizePreviews);
+    var disposed = false;
+    if (document.fonts) document.fonts.ready.then(function () { if (!disposed) sizePreviews(); });
     function loopWidth() { return track.children[items.length].offsetLeft - items[0].offsetLeft; }
     function position() { return viewport.scrollLeft % loopWidth(); }
     function move(direction) {
+      if (items.length < 2) return;
       rest();
       var current = position(), target;
       var offsets = items.map(function (el) { return el.offsetLeft - items[0].offsetLeft; });
@@ -162,9 +217,9 @@
     var controls = document.createElement('div');
     controls.className = 'tcarousel-controls';
     controls.innerHTML = '<button type="button" class="btn btn--ghost" aria-label="Previous testimonial" aria-controls="testimonials">&#8592;</button>' +
-      '<span>Swipe or drag to explore</span>' +
       '<button type="button" class="btn btn--ghost" aria-label="Next testimonial" aria-controls="testimonials">&#8594;</button>';
-    viewport.insertAdjacentElement('afterend', controls);
+    controls.hidden = items.length < 2;
+    viewport.insertAdjacentElement('beforebegin', controls);
     listen(controls.firstElementChild, 'click', function () { move(-1); });
     listen(controls.lastElementChild, 'click', function () { move(1); });
     viewport.tabIndex = 0;
@@ -178,7 +233,7 @@
     listen(section, 'pointerenter', function (e) { if (e.pointerType === 'mouse') hovering = true; });
     listen(section, 'pointerleave', function (e) { if (e.pointerType === 'mouse') hovering = false; });
     listen(viewport, 'pointerdown', function (e) {
-      if (e.button !== 0) return;
+      if (e.button !== 0 || e.target.closest('button')) return;
       touching = true; rest();
       if (e.pointerType === 'mouse') {
         dragging = true; startX = e.clientX; startScroll = viewport.scrollLeft;
@@ -205,7 +260,7 @@
       lastTime = now;
       var focused = section.contains(document.activeElement);
       var bounds = viewport.getBoundingClientRect();
-      if (!motion.matches && !document.hidden && bounds.bottom > 0 && bounds.top < window.innerHeight &&
+      if (items.length > 1 && !dialog.open && !motion.matches && !document.hidden && bounds.bottom > 0 && bounds.top < window.innerHeight &&
           !hovering && !touching && !focused && now >= pauseUntil) {
         remainder += elapsed * 0.025;
         var step = Math.floor(remainder);
@@ -216,8 +271,16 @@
     }
     frameId = requestAnimationFrame(tick);
     cleanupTestimonials = function () {
+      disposed = true;
       cancelAnimationFrame(frameId);
+      if (previewObserver) previewObserver.disconnect();
+      if (dialog.open) { dialog.close(); document.body.style.overflow = previousOverflow || ''; }
       listeners.forEach(function (remove) { remove(); });
+      dialog.remove();
+      items.forEach(function (el) {
+        el.querySelector('.review-more').remove();
+        el.classList.remove('quote--compact');
+      });
       controls.remove();
       cleanupTestimonials = null;
     };

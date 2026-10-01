@@ -9,7 +9,8 @@
    sync with the treatment names from the sheet.
 
    Resilient: if the sheet isn't set up, is offline, or a tab is empty, each
-   page keeps its built-in content. Vanilla JS, no dependencies.
+   page keeps its built-in content, except testimonials which show a status
+   message instead of placeholder quotes. Vanilla JS, no dependencies.
    ========================================================================= */
 (function () {
   'use strict';
@@ -67,11 +68,11 @@
   function sheetUrl(tab) {
     return 'https://docs.google.com/spreadsheets/d/' + C.sheetId + '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent(tab);
   }
-  function load(tab, done) {
+  function load(tab, done, failed) {
   fetch(sheetUrl(tab), { cache: 'no-store' })
     .then(function (r) { return r.ok ? r.arrayBuffer() : Promise.reject(); })
     .then(function (buf) { done(toObjects(parseCSV(new TextDecoder('utf-8').decode(buf)))); })
-    .catch(function () {});
+    .catch(function () { if (failed) failed(); });
 }
   function reveal(el) { el.querySelectorAll('.reveal').forEach(function (n) { n.classList.add('is-in'); }); }
   
@@ -98,16 +99,30 @@
   /* ---- 1. Testimonials (homepage carousel) ----------------------------- */
   var tEl = document.getElementById('testimonials');
   if (tEl && C.tabs && C.tabs.testimonials) {
+    var tStatus = document.getElementById('testimonials-status');
+    function testimonialStatus(message) {
+      if (tStatus) {
+        tStatus.textContent = message;
+        tStatus.hidden = !message;
+      }
+    }
+    testimonialStatus('Loading testimonials…');
     load(C.tabs.testimonials, function (rows) {
       rows = rows.filter(function (r) { return r.quote && shown(r.show); });
-      if (!rows.length) return;
+      if (!rows.length) {
+        testimonialStatus('There are no testimonials to display at the moment.');
+        return;
+      }
       tEl.innerHTML = rows.map(function (r) {
         var who = esc(r.name || '');
         if (r.location) who += (who ? ', ' : '') + esc(r.location);
         return '<figure class="quote"><p>&ldquo;' + esc(r.quote) + '&rdquo;</p>' +
                (who ? '<figcaption class="who">&mdash; ' + who + '</figcaption>' : '') + '</figure>';
       }).join('');
+      testimonialStatus('');
       if (window.HHH_initTestimonialCarousel) window.HHH_initTestimonialCarousel();
+    }, function () {
+      testimonialStatus('Testimonials are currently unavailable. Please try again later.');
     });
   }
 

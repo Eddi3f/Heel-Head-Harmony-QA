@@ -161,15 +161,15 @@ body.menu-open .nav-toggle span::after { transform:translateY(-6px) rotate(-45de
 .quote { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:clamp(1.4rem,3vw,2rem); box-shadow:var(--shadow-soft); height:100%; }
 .quote p { font-style:italic; font-size:1.08rem; }
 .quote .who { font-family:var(--font-heading); color:var(--primary); font-style:normal; font-weight:600; }
-.tcarousel { position:relative; overflow:hidden; margin-top:1rem;
-  -webkit-mask-image:linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-          mask-image:linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
-.tcarousel-track { display:flex; gap:clamp(1rem,3vw,1.8rem); width:max-content; will-change:transform; }
+.tcarousel { position:relative; overflow-x:auto; overflow-y:hidden; margin-top:1rem;
+  scrollbar-width:thin; scrollbar-color:var(--sage) transparent; cursor:grab; }
+.tcarousel.is-dragging { cursor:grabbing; user-select:none; }
+.tcarousel-track { position:relative; display:flex; align-items:flex-start; gap:clamp(1rem,3vw,1.8rem); width:max-content; padding:.25rem 0 1rem; }
 .tcarousel-track .quote { flex:0 0 auto; width:min(360px, 80vw); height:auto; display:flex; flex-direction:column; }
 .tcarousel-track .quote p { margin-bottom:.8rem; }
-.tcarousel:hover .tcarousel-track.is-scrolling,
-.tcarousel:focus-within .tcarousel-track.is-scrolling { animation-play-state:paused; }
-@keyframes hhh-marquee { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+.tcarousel-controls { display:flex; align-items:center; justify-content:center; gap:1rem; margin-top:1rem; }
+.tcarousel-controls span { color:var(--text-muted); font-size:.8rem; }
+.tcarousel-controls .btn { min-width:44px; min-height:44px; padding:.45rem .9rem; }
 
 /* ----- 15. FAQ ---------------------------------------------------------- */
 .faq details { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:.3rem 1.2rem; margin-bottom:.8rem; }

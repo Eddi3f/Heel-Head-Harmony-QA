@@ -117,24 +117,110 @@
   if (y) y.textContent = new Date().getFullYear();
 
   /* ---- 6. Testimonial carousel ----------------------------------------- */
+  var cleanupTestimonials;
   function initTestimonialCarousel() {
+    if (cleanupTestimonials) cleanupTestimonials();
     var track = document.getElementById('testimonials');
     if (!track) return;
     track.querySelectorAll('[data-clone]').forEach(function (n) { n.remove(); });
-    track.style.animation = '';
-    track.classList.remove('is-scrolling');
     var items = Array.prototype.slice.call(track.children);
     if (!items.length) return;
+    var viewport = track.parentElement;
+    var section = viewport.parentElement;
+    var motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var listeners = [], frameId, lastTime = 0, remainder = 0;
+    var hovering = false, touching = false, dragging = false, pauseUntil = 0;
+    var startX = 0, startScroll = 0;
+    function listen(el, type, fn, options) {
+      el.addEventListener(type, fn, options);
+      listeners.push(function () { el.removeEventListener(type, fn, options); });
+    }
+    function rest() { pauseUntil = performance.now() + 12000; }
     items.forEach(function (el) { el.classList.add('is-in'); });
-    if (reduceMotion || items.length < 2) return;
+    viewport.scrollLeft = 0;
+    if (items.length < 2) return;
+    // Copies allow a continuous loop; only the original quotes are announced.
     items.forEach(function (el) {
-      var c = el.cloneNode(true);
-      c.setAttribute('data-clone', ''); c.setAttribute('aria-hidden', 'true');
-      track.appendChild(c);
+      var copy = el.cloneNode(true);
+      copy.setAttribute('data-clone', '');
+      copy.setAttribute('aria-hidden', 'true');
+      track.appendChild(copy);
     });
-    var duration = Math.max(18, items.length * 7);
-    track.style.animation = 'hhh-marquee ' + duration + 's linear infinite';
-    track.classList.add('is-scrolling');
+    function loopWidth() { return track.children[items.length].offsetLeft - items[0].offsetLeft; }
+    function position() { return viewport.scrollLeft % loopWidth(); }
+    function move(direction) {
+      rest();
+      var current = position(), target;
+      var offsets = items.map(function (el) { return el.offsetLeft - items[0].offsetLeft; });
+      if (direction > 0) target = offsets.find(function (x) { return x > current + 2; });
+      else target = offsets.slice().reverse().find(function (x) { return x < current - 2; });
+      if (target == null) target = direction > 0 ? 0 : offsets[offsets.length - 1];
+      // Return from the duplicate set before a manual move.
+      viewport.scrollLeft = current;
+      viewport.scrollTo({ left: target, behavior: motion.matches ? 'auto' : 'smooth' });
+    }
+    var controls = document.createElement('div');
+    controls.className = 'tcarousel-controls';
+    controls.innerHTML = '<button type="button" class="btn btn--ghost" aria-label="Previous testimonial" aria-controls="testimonials">&#8592;</button>' +
+      '<span>Swipe or drag to explore</span>' +
+      '<button type="button" class="btn btn--ghost" aria-label="Next testimonial" aria-controls="testimonials">&#8594;</button>';
+    viewport.insertAdjacentElement('afterend', controls);
+    listen(controls.firstElementChild, 'click', function () { move(-1); });
+    listen(controls.lastElementChild, 'click', function () { move(1); });
+    viewport.tabIndex = 0;
+    viewport.setAttribute('role', 'region');
+    viewport.setAttribute('aria-label', 'Client testimonials. Use left and right arrow keys to browse.');
+    listen(viewport, 'keydown', function (e) {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault(); move(e.key === 'ArrowLeft' ? -1 : 1);
+      }
+    });
+    listen(section, 'pointerenter', function (e) { if (e.pointerType === 'mouse') hovering = true; });
+    listen(section, 'pointerleave', function (e) { if (e.pointerType === 'mouse') hovering = false; });
+    listen(viewport, 'pointerdown', function (e) {
+      if (e.button !== 0) return;
+      touching = true; rest();
+      if (e.pointerType === 'mouse') {
+        dragging = true; startX = e.clientX; startScroll = viewport.scrollLeft;
+        viewport.setPointerCapture(e.pointerId);
+        viewport.classList.add('is-dragging');
+        e.preventDefault();
+      }
+    });
+    listen(viewport, 'pointermove', function (e) {
+      if (dragging) viewport.scrollLeft = startScroll - (e.clientX - startX);
+    });
+    function release() {
+      if (touching || dragging) rest();
+      touching = false; dragging = false;
+      viewport.classList.remove('is-dragging');
+    }
+    listen(window, 'pointerup', release);
+    listen(window, 'pointercancel', release);
+    listen(viewport, 'lostpointercapture', release);
+    listen(viewport, 'wheel', rest, { passive: true });
+    listen(viewport, 'touchmove', rest, { passive: true });
+    function tick(now) {
+      var elapsed = lastTime ? Math.min(now - lastTime, 50) : 0;
+      lastTime = now;
+      var focused = section.contains(document.activeElement);
+      var bounds = viewport.getBoundingClientRect();
+      if (!motion.matches && !document.hidden && bounds.bottom > 0 && bounds.top < window.innerHeight &&
+          !hovering && !touching && !focused && now >= pauseUntil) {
+        remainder += elapsed * 0.025;
+        var step = Math.floor(remainder);
+        remainder -= step;
+        if (step) viewport.scrollLeft = (viewport.scrollLeft + step) % loopWidth();
+      }
+      frameId = requestAnimationFrame(tick);
+    }
+    frameId = requestAnimationFrame(tick);
+    cleanupTestimonials = function () {
+      cancelAnimationFrame(frameId);
+      listeners.forEach(function (remove) { remove(); });
+      controls.remove();
+      cleanupTestimonials = null;
+    };
   }
   window.HHH_initTestimonialCarousel = initTestimonialCarousel;
   initTestimonialCarousel();

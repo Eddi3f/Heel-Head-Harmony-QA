@@ -55,7 +55,7 @@ p { margin:0 0 var(--space-2); }
 .skip-link:focus { top:12px; color:#fff; }
 
 /* ----- 5. Header / nav -------------------------------------------------- */
-.site-header { position:sticky; top:0; z-index:100; background:rgba(255,255,255,.82); backdrop-filter:saturate(140%) blur(10px);
+.site-header { position:sticky; top:0; z-index:100; background:#fff;
   border-bottom:1px solid transparent; transition:box-shadow .25s var(--ease), border-color .25s var(--ease); }
 .site-header.is-stuck { box-shadow:var(--shadow-soft); border-bottom-color:var(--border); }
 .nav { display:flex; align-items:center; justify-content:space-between; gap:var(--space-2); height:var(--header-h); }
@@ -165,14 +165,14 @@ body.menu-open .nav-toggle span::after { transform:translateY(-6px) rotate(-45de
   scrollbar-width:thin; scrollbar-color:var(--sage) transparent; cursor:grab; }
 .tcarousel.is-dragging { cursor:grabbing; user-select:none; }
 .tcarousel-track { position:relative; display:flex; align-items:stretch; gap:clamp(1rem,3vw,1.8rem); width:max-content; padding:.25rem 0 1rem; }
-.tcarousel-track .quote { flex:0 0 auto; width:min(360px, 80vw); height:auto; display:flex; flex-direction:column; }
+.tcarousel-track .quote { flex:0 0 auto; width:min(360px, 80vw); margin:0; height:auto; display:flex; flex-direction:column; }
 .tcarousel-track .quote p { margin-bottom:.8rem; }
 .tcarousel-track .quote--compact { padding:1.4rem; }
 .tcarousel-track .quote--compact p { font-size:1rem; line-height:1.65; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:6; overflow:hidden; }
 .tcarousel-track .quote--compact .who { margin-top:auto; font-size:.95rem; }
 .review-more { align-self:flex-start; min-height:44px; margin-top:.35rem; padding:.45rem 0; border:0; background:none; color:var(--primary); font:inherit; font-size:.85rem; text-decoration:underline; text-underline-offset:.25em; cursor:pointer; }
 .review-more[hidden], .tcarousel-controls[hidden] { display:none; }
-.tcarousel-controls { display:flex; align-items:center; justify-content:flex-end; gap:.6rem; margin-top:.8rem; }
+.tcarousel-controls { display:flex; align-items:center; justify-content:center; gap:.6rem; margin-top:.8rem; }
 .tcarousel-controls span { color:var(--text-muted); font-size:.8rem; }
 .tcarousel-controls .btn { min-width:44px; min-height:44px; padding:.45rem .9rem; }
 .review-dialog { width:min(560px, calc(100% - 2rem)); max-height:80vh; max-height:80dvh; margin:auto; padding:clamp(1.5rem,4vw,2.5rem); border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); color:var(--ink); box-shadow:0 20px 70px #12201e33; overflow-y:auto; }
@@ -210,8 +210,9 @@ body.menu-open .nav-toggle span::after { transform:translateY(-6px) rotate(-45de
 .footer-disclaimer { margin-top:var(--space-4); padding-top:var(--space-2); border-top:1px solid rgba(255,255,255,.12); font-size:.82rem; color:#a9c1ba; max-width:92ch; }
 
 /* ----- 18. Scroll-reveal ------------------------------------------------ */
-.reveal { opacity:0; transform:translateY(22px); transition:opacity .7s var(--ease), transform .7s var(--ease); }
-.reveal.is-in { opacity:1; transform:none; }
+.js .reveal { opacity:0; transform:translateY(22px); transition:opacity .7s var(--ease), transform .7s var(--ease); }
+.js .reveal.is-in { opacity:1; transform:none; }
+.field[hidden] { display:none; }
 
 /* ----- 18b. Trust strip ------------------------------------------------- */
 .trust { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:clamp(1rem,3vw,1.6rem); margin-top:1.6rem; }
@@ -273,7 +274,7 @@ body.menu-open .nav-toggle span::after { transform:translateY(-6px) rotate(-45de
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior:auto; }
   *, *::before, *::after { animation-duration:.001ms !important; transition-duration:.001ms !important; }
-  .reveal { opacity:1; transform:none; }
+  .js .reveal { opacity:1; transform:none; }
   .tcarousel { overflow-x:auto; -webkit-mask-image:none; mask-image:none; }
   .tcarousel-track { animation:none !important; }
 }

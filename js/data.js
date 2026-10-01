@@ -39,7 +39,12 @@
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
-  function urlAttr(s) { return String(s == null ? '' : s).replace(/"/g, '%22').replace(/\s/g, ''); }
+  function urlAttr(s) {
+    try {
+      var u = new URL(String(s || '').trim());
+      return /^https?:$/.test(u.protocol) ? esc(u.href) : '';
+    } catch (e) { return ''; }
+  }
   function shown(v) { return !/^(no|false|0|hide|hidden)$/i.test(String(v || '').trim()); }
 
   function parseCSV(text) {
@@ -69,11 +74,45 @@
     return 'https://docs.google.com/spreadsheets/d/' + C.sheetId + '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent(tab);
   }
   function load(tab, done, failed) {
-  fetch(sheetUrl(tab), { cache: 'no-store' })
+  var controller = new AbortController();
+  var timeout = setTimeout(function () { controller.abort(); }, 12000);
+  fetch(sheetUrl(tab), { cache: 'no-store', signal: controller.signal })
     .then(function (r) { return r.ok ? r.arrayBuffer() : Promise.reject(); })
-    .then(function (buf) { done(toObjects(parseCSV(new TextDecoder('utf-8').decode(buf)))); })
-    .catch(function () { if (failed) failed(); });
+    .then(function (buf) {
+      var csv = new TextDecoder('utf-8').decode(buf);
+      if (/^\s*</.test(csv)) throw new Error('Invalid content feed');
+      done(toObjects(parseCSV(csv)));
+    })
+    .catch(function () { if (failed) failed(); else feedUnavailable(tab); })
+    .then(function () { clearTimeout(timeout); });
 }
+  function contentNotice(el, message, replace) {
+    if (!el) return;
+    if (replace) el.innerHTML = '';
+    var id = el.id + '-notice';
+    var note = document.getElementById(id);
+    if (!note) {
+      note = document.createElement('p'); note.id = id; note.className = 'note';
+      note.setAttribute('role', 'status'); el.insertAdjacentElement('beforebegin', note);
+    }
+    note.textContent = message;
+  }
+  function feedUnavailable(tab) {
+    if (tab === C.tabs.treatments) {
+      contentNotice(pEl, 'Current treatment prices are unavailable. Please contact Pamela for details.', true);
+      var group = document.getElementById('subject-treatments');
+      if (group) {
+        group.innerHTML = '';
+        contentNotice(document.getElementById('subject'), 'Treatment choices are unavailable. Please use General enquiry or Other.', false);
+      }
+    } else if (tab === C.tabs.research) {
+      contentNotice(rEl, 'Research links are currently unavailable. Please try again later.', true);
+    } else if (tab === C.tabs.about) {
+      contentNotice(bioEl || credEl, 'The latest profile could not be loaded. The information below may not reflect recent updates.', false);
+    } else if (tab === C.tabs.faq) {
+      contentNotice(faqEl, 'FAQs are currently unavailable. Please contact Pamela with your question.', true);
+    }
+  }
   function reveal(el) { el.querySelectorAll('.reveal').forEach(function (n) { n.classList.add('is-in'); }); }
   
   function boldify(s) {
@@ -132,8 +171,8 @@
   if ((pEl || onContact) && C.tabs && C.tabs.treatments) {
     load(C.tabs.treatments, function (rows) {
       rows = rows.filter(function (r) { return r.treatment; });
-      if (!rows.length) return;
-      var order = [], map = {};
+      if (!rows.length) { feedUnavailable(C.tabs.treatments); return; }
+      var order = [], map = Object.create(null);
       rows.forEach(function (r) {
         var key = r.treatment.trim();
         if (!map[key]) { map[key] = { icon: r.icon || '', note: r.note || '', lines: [] }; order.push(key); }
@@ -162,8 +201,8 @@
   var rEl = document.getElementById('research-grid');
   if (rEl && C.tabs && C.tabs.research) {
     load(C.tabs.research, function (rows) {
-      rows = rows.filter(function (r) { return r.condition && r.link_url; });
-      if (!rows.length) return;
+      rows = rows.filter(function (r) { return r.condition && urlAttr(r.link_url); });
+      if (!rows.length) { contentNotice(rEl, 'There are no research links to display at the moment.', true); return; }
       rEl.innerHTML = rows.map(function (r) {
         return '<div class="research-item reveal"><h3>' + esc(r.condition) + '</h3>' +
                '<a href="' + urlAttr(r.link_url) + '" target="_blank" rel="noopener">View research &rarr;</a></div>';
@@ -181,7 +220,7 @@ if ((bioEl || credEl) && C.tabs && C.tabs.about) {
     var creds = rows.filter(function (r) { return r.type && r.type.toLowerCase() === 'credential' && r.text; });
 
     if (bioEl && bioRow) {
-      var paras = bioRow.text.split(/\r?\n/).filter(function (p) { return p.trim(); });
+      var paras = bioRow.text.replace(/\\n/g, '\n').split(/\r?\n/).filter(function (p) { return p.trim(); });
       bioEl.innerHTML = paras.map(function (p) { return '<p>' + boldify(p) + '</p>'; }).join('');
     }
     if (credEl && creds.length) {
@@ -195,7 +234,7 @@ var faqEl = document.getElementById('faq-list');
 if (faqEl && C.tabs && C.tabs.faq) {
   load(C.tabs.faq, function (rows) {
     rows = rows.filter(function (r) { return r.question && r.answer && shown(r.show); });
-    if (!rows.length) return;
+    if (!rows.length) { contentNotice(faqEl, 'There are no FAQs to display at the moment.', true); return; }
     faqEl.innerHTML = rows.map(function (r) {
       return '<details class="reveal"><summary>' + esc(r.question) + '</summary><p>' + boldify(r.answer) + '</p></details>';
     }).join('');

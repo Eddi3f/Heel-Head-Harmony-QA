@@ -10,7 +10,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="Images/favicon-16x16.png">
   <link rel="apple-touch-icon" href="Images/apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
-  <link rel="canonical" href="https://www.heelheadharmony.co.uk/contact.html">
+  <link rel="canonical" href="https://www.heelheadharmony.co.uk/contact">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital@0;1&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
@@ -50,7 +50,8 @@
         <div class="reveal" id="book" style="scroll-margin-top:96px">
           <h2>Send a message</h2>
           <!-- Connected to the Cloudflare Worker via HHH_CONFIG.formEndpoint in js/config.js. -->
-          <form class="form" novalidate>
+          <noscript><p>Please enable JavaScript to use the form, or <a href="mailto:heelheadharmony@gmail.com">email Pamela directly</a>.</p><style>.form { display:none; }</style></noscript>
+          <form class="form" novalidate method="post" action="https://hhh-contact.efulwood.workers.dev">
             <div class="field"><label for="name">Your name</label><input id="name" name="name" type="text" autocomplete="name" required></div>
             <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
             <div class="field"><label for="phone">Phone (optional)</label><input id="phone" name="phone" type="tel" autocomplete="tel"></div>
@@ -68,15 +69,15 @@
                 <option value="Other">Other (please specify)</option>
               </select>
             </div>
-            <div class="field" id="subject-other-field">
+            <div class="field" id="subject-other-field" hidden>
               <label for="subject-other">Please specify</label>
               <input id="subject-other" name="subject_other" type="text" placeholder="Tell us what your message is about" hidden>
             </div>
-            <div class="field"><label for="message">Message</label><textarea id="message" name="message" rows="5" required></textarea></div>
+            <div class="field"><label for="message">Message</label><textarea id="message" name="message" rows="5" aria-describedby="message-help" required></textarea><p id="message-help" style="font-size:.85rem">Please keep this to your enquiry and avoid including detailed medical information.</p></div>
             <button class="btn btn--primary" type="submit">Send message</button>
             <p class="form-status" tabindex="-1"></p>
           </form>
-          <p class="lede" style="font-size:.85rem;margin-top:.8rem">By sending a message you agree to our <a href="privacy.html">Privacy Policy</a>.</p>
+          <p class="lede" style="font-size:.85rem;margin-top:.8rem">Read our <a href="privacy.html">Privacy Policy</a> to learn how your enquiry information is used.</p>
         </div>
 
         <!-- DETAILS (right on desktop, below on mobile). Anchor: #details -->

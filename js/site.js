@@ -6,6 +6,7 @@
    ========================================================================= */
 (function () {
   'use strict';
+  document.documentElement.classList.add('js');
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var CFG = window.HHH_CONFIG || {};
@@ -68,9 +69,7 @@
       if (!form.checkValidity()) { form.reportValidity && form.reportValidity(); return; }
 
       if (!endpointReady()) {
-        setStatus('Thanks for getting in touch — Pamela will reply as soon as possible. (Demo only: this form is not connected yet.)', 'ok');
-        form.reset();
-        var oD = form.querySelector('#subject-other'); if (oD) oD.hidden = true;
+        setStatus('The contact form is currently unavailable. Please email heelheadharmony@gmail.com or call 07870 895863.', 'err');
         return;
       }
 
@@ -86,26 +85,33 @@
 
       if (btn) { btn.disabled = true; btn.dataset.label = btn.textContent; btn.textContent = 'Sending…'; }
       setStatus('Sending your message…');
+      var controller = new AbortController();
+      var timeout = setTimeout(function () { controller.abort(); }, 20000);
 
       fetch(CFG.formEndpoint, {
         method: 'POST',
+        signal: controller.signal,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       })
-      .then(function (r) { return r.json().catch(function () { return { ok: r.ok }; }); })
+      .then(function (r) {
+        if (!r.ok) throw new Error('Message request failed');
+        return r.json();
+      })
       .then(function (res) {
         if (res && res.ok) {
           setStatus('Thank you — your message has been sent. Pamela will reply as soon as possible.', 'ok');
           form.reset();
-          var o = form.querySelector('#subject-other'); if (o) o.hidden = true;
+          toggleOther();
         } else {
           setStatus((res && res.error) || 'Sorry, something went wrong. Please email heelheadharmony@gmail.com instead.', 'err');
         }
       })
       .catch(function () {
-        setStatus('Sorry, your message could not be sent. Please email heelheadharmony@gmail.com or call 07870 895863.', 'err');
+        setStatus('We could not confirm that your message was sent. Please email heelheadharmony@gmail.com or call 07870 895863 before trying again.', 'err');
       })
       .then(function () {
+        clearTimeout(timeout);
         if (btn) { btn.disabled = false; btn.textContent = btn.dataset.label || 'Send message'; }
       });
     });
@@ -296,6 +302,8 @@
     if (!subjectSelect || !subjectOther) return;
     var isOther = subjectSelect.value === 'Other';
     subjectOther.hidden = !isOther;
+    var otherField = document.getElementById('subject-other-field');
+    if (otherField) otherField.hidden = !isOther;
     subjectOther.required = isOther;
     if (isOther) { try { subjectOther.focus(); } catch (e) {} }
   }
